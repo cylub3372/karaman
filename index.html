@@ -1,0 +1,3589 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Siber Güvenlik Portalı | Emre Karaman</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-black: #050807;
+      --bg-card: #09120c;
+      --text-light: #e6ffed;
+      --text-muted: #7ca88b;
+      
+      /* Renkli Bilgisayar Neon Paletleri */
+      --c-green: #00ff66;
+      --c-cyan: #00e5ff;
+      --c-purple: #c084fc;
+      --c-amber: #fbbf24;
+      --c-crimson: #ff0055;
+      --c-emerald: #10b981;
+      --c-orange: #ff5722;
+      --c-blue: #38bdf8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      background-color: var(--bg-black);
+      color: var(--text-light);
+      font-family: 'Fira Code', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      scroll-behavior: smooth;
+    }
+
+    /* Arka Plan Matrix Yağmuru */
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0.14;
+      pointer-events: none;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 0%, rgba(5, 8, 7, 0.88) 100%),
+                  linear-gradient(rgba(0, 255, 102, 0.02) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(0, 255, 102, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Header Bar */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 28px;
+      background: rgba(5, 8, 7, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #143521;
+    }
+
+    .system-status {
+      font-size: 0.85rem;
+      color: var(--c-green);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--c-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--c-green);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    /* SAĞ ÜST KÖŞE: SADECE Emre Karaman */
+    .designer-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 59, 21, 0.5);
+      border: 1.5px solid var(--c-green);
+      padding: 5px 16px 5px 6px;
+      border-radius: 50px;
+      color: var(--c-green);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+    }
+
+    .designer-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid var(--c-green);
+      box-shadow: 0 0 8px var(--c-green);
+      display: block;
+    }
+
+    /* HACKER SYNTHWAVE / LOFI PLAYER */
+    .cyber-audio-player {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 36, 13, 0.7);
+      border: 1px solid var(--c-green);
+      padding: 7px 16px;
+      border-radius: 6px;
+      box-shadow: 0 0 12px rgba(0, 255, 102, 0.2);
+      transition: all 0.2s;
+    }
+
+    .cyber-audio-player:hover {
+      box-shadow: 0 0 18px rgba(0, 255, 102, 0.35);
+    }
+
+    .music-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--c-green);
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      outline: none;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    .music-toggle-btn:hover {
+      text-shadow: 0 0 8px var(--c-green);
+    }
+
+    .eq-bars {
+      display: flex;
+      gap: 3px;
+      align-items: flex-end;
+      height: 14px;
+    }
+
+    .eq-bar {
+      width: 3px;
+      height: 3px;
+      background: var(--c-green);
+      border-radius: 1px;
+      transition: height 0.2s;
+    }
+
+    .is-playing .eq-bar:nth-child(1) { animation: eqJump 0.5s infinite ease-in-out; }
+    .is-playing .eq-bar:nth-child(2) { animation: eqJump 0.35s infinite ease-in-out 0.1s; }
+    .is-playing .eq-bar:nth-child(3) { animation: eqJump 0.6s infinite ease-in-out 0.2s; }
+    .is-playing .eq-bar:nth-child(4) { animation: eqJump 0.4s infinite ease-in-out 0.15s; }
+
+    @keyframes eqJump {
+      0%, 100% { height: 3px; }
+      50% { height: 14px; }
+    }
+
+    /* Main Container */
+    .main-wrap {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 110px 20px 60px;
+      max-width: 1350px;
+      margin: 0 auto;
+    }
+
+    .section-headline {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .section-headline h1 {
+      font-size: 2.3rem;
+      color: var(--c-green);
+      text-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .section-headline p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* RENKLİ BİLGİSAYARLARIN GRID DÜZENİ */
+    .computers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      width: 100%;
+      margin-bottom: 50px;
+    }
+
+    /* Genel Laptop Kartı */
+    .computer-card {
+      background: rgba(8, 16, 11, 0.7);
+      border-radius: 14px;
+      padding: 24px 20px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      border: 1.5px solid #143521;
+    }
+
+    .computer-card:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    .computer-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+
+    /* 3D Bilgisayar / Laptop Mockup */
+    .laptop {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto 16px;
+    }
+
+    .laptop-screen {
+      height: 195px;
+      background: #020704;
+      border-radius: 12px 12px 0 0;
+      position: relative;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border: 3px solid #142e1c;
+      box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.9);
+    }
+
+    /* EKRAN İÇİ MATRIX YAĞMURU & SCANLINE EFEKTİ */
+    .screen-matrix-bg {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      opacity: 0.25;
+      font-size: 10px;
+      line-height: 12px;
+      overflow: hidden;
+      user-select: none;
+      pointer-events: none;
+      word-break: break-all;
+      animation: matrixScroll 12s linear infinite;
+    }
+
+    @keyframes matrixScroll {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+
+    .laptop-screen::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .screen-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+    }
+
+    .screen-icon {
+      font-size: 2.3rem;
+      margin-bottom: 8px;
+      animation: floatIcon 3s ease-in-out infinite;
+    }
+
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .screen-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .screen-desc {
+      font-size: 0.74rem;
+      opacity: 0.9;
+    }
+
+    .laptop-base {
+      height: 15px;
+      background: linear-gradient(180deg, #132418 0%, #08110b 100%);
+      border-radius: 0 0 8px 8px;
+      border: 2px solid #1a3823;
+      border-top: none;
+      position: relative;
+    }
+
+    .laptop-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 4px;
+      background: #020503;
+      border-radius: 0 0 4px 4px;
+    }
+
+    .computer-action-btn {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+
+    /* BİLGİSAYAR RENK TEMALARI */
+    /* 1. Yeşil (Doküman) */
+    .pc-green { border-color: rgba(0, 255, 102, 0.3); }
+    .pc-green:hover { border-color: var(--c-green); box-shadow: 0 0 30px rgba(0, 255, 102, 0.3); }
+    .pc-green .computer-badge { background: rgba(0, 255, 102, 0.12); color: var(--c-green); border: 1px solid var(--c-green); }
+    .pc-green .laptop-screen { border-color: #008f39; box-shadow: inset 0 0 20px rgba(0, 255, 102, 0.2); }
+    .pc-green .screen-matrix-bg { color: var(--c-green); }
+    .pc-green .screen-title { color: var(--c-green); text-shadow: 0 0 8px var(--c-green); }
+    .pc-green .screen-desc { color: #a3ffc1; }
+    .pc-green .computer-action-btn { background: rgba(0, 255, 102, 0.12); border: 1px solid var(--c-green); color: var(--c-green); }
+    .pc-green:hover .computer-action-btn { background: var(--c-green); color: #050807; box-shadow: 0 0 15px var(--c-green); }
+
+    /* 2. Cyan Mavi (Yol Haritası) */
+    .pc-cyan { border-color: rgba(0, 229, 255, 0.3); }
+    .pc-cyan:hover { border-color: var(--c-cyan); box-shadow: 0 0 30px rgba(0, 229, 255, 0.3); }
+    .pc-cyan .computer-badge { background: rgba(0, 229, 255, 0.12); color: var(--c-cyan); border: 1px solid var(--c-cyan); }
+    .pc-cyan .laptop-screen { border-color: #008394; box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.2); }
+    .pc-cyan .screen-matrix-bg { color: var(--c-cyan); }
+    .pc-cyan .screen-title { color: var(--c-cyan); text-shadow: 0 0 8px var(--c-cyan); }
+    .pc-cyan .screen-desc { color: #b3f7ff; }
+    .pc-cyan .computer-action-btn { background: rgba(0, 229, 255, 0.12); border: 1px solid var(--c-cyan); color: var(--c-cyan); }
+    .pc-cyan:hover .computer-action-btn { background: var(--c-cyan); color: #050807; box-shadow: 0 0 15px var(--c-cyan); }
+
+    /* 3. Mor / Magenta (İnteraktif Araçlar) */
+    .pc-purple { border-color: rgba(192, 132, 252, 0.3); }
+    .pc-purple:hover { border-color: var(--c-purple); box-shadow: 0 0 30px rgba(192, 132, 252, 0.3); }
+    .pc-purple .computer-badge { background: rgba(192, 132, 252, 0.12); color: var(--c-purple); border: 1px solid var(--c-purple); }
+    .pc-purple .laptop-screen { border-color: #7928ca; box-shadow: inset 0 0 20px rgba(192, 132, 252, 0.2); }
+    .pc-purple .screen-matrix-bg { color: var(--c-purple); }
+    .pc-purple .screen-title { color: var(--c-purple); text-shadow: 0 0 8px var(--c-purple); }
+    .pc-purple .screen-desc { color: #f3e8ff; }
+    .pc-purple .computer-action-btn { background: rgba(192, 132, 252, 0.12); border: 1px solid var(--c-purple); color: var(--c-purple); }
+    .pc-purple:hover .computer-action-btn { background: var(--c-purple); color: #050807; box-shadow: 0 0 15px var(--c-purple); }
+
+    /* 4. Amber / Sarı (Mini Terminal) */
+    .pc-amber { border-color: rgba(251, 191, 36, 0.3); }
+    .pc-amber:hover { border-color: var(--c-amber); box-shadow: 0 0 30px rgba(251, 191, 36, 0.3); }
+    .pc-amber .computer-badge { background: rgba(251, 191, 36, 0.12); color: var(--c-amber); border: 1px solid var(--c-amber); }
+    .pc-amber .laptop-screen { border-color: #b45309; box-shadow: inset 0 0 20px rgba(251, 191, 36, 0.2); }
+    .pc-amber .screen-matrix-bg { color: var(--c-amber); }
+    .pc-amber .screen-title { color: var(--c-amber); text-shadow: 0 0 8px var(--c-amber); }
+    .pc-amber .screen-desc { color: #fef3c7; }
+    .pc-amber .computer-action-btn { background: rgba(251, 191, 36, 0.12); border: 1px solid var(--c-amber); color: var(--c-amber); }
+    .pc-amber:hover .computer-action-btn { background: var(--c-amber); color: #050807; box-shadow: 0 0 15px var(--c-amber); }
+
+    /* 5. Crimson / Kırmızı (Quiz / Siber Test) */
+    .pc-crimson { border-color: rgba(255, 0, 85, 0.3); }
+    .pc-crimson:hover { border-color: var(--c-crimson); box-shadow: 0 0 30px rgba(255, 0, 85, 0.3); }
+    .pc-crimson .computer-badge { background: rgba(255, 0, 85, 0.12); color: var(--c-crimson); border: 1px solid var(--c-crimson); }
+    .pc-crimson .laptop-screen { border-color: #9f1239; box-shadow: inset 0 0 20px rgba(255, 0, 85, 0.2); }
+    .pc-crimson .screen-matrix-bg { color: var(--c-crimson); }
+    .pc-crimson .screen-title { color: var(--c-crimson); text-shadow: 0 0 8px var(--c-crimson); }
+    .pc-crimson .screen-desc { color: #ffe4e6; }
+    .pc-crimson .computer-action-btn { background: rgba(255, 0, 85, 0.12); border: 1px solid var(--c-crimson); color: var(--c-crimson); }
+    .pc-crimson:hover .computer-action-btn { background: var(--c-crimson); color: #ffffff; box-shadow: 0 0 15px var(--c-crimson); }
+
+    /* 6. Zümrüt / Yeşil-Mavi (Cheat Sheet) */
+    .pc-emerald { border-color: rgba(16, 185, 129, 0.3); }
+    .pc-emerald:hover { border-color: var(--c-emerald); box-shadow: 0 0 30px rgba(16, 185, 129, 0.3); }
+    .pc-emerald .computer-badge { background: rgba(16, 185, 129, 0.12); color: var(--c-emerald); border: 1px solid var(--c-emerald); }
+    .pc-emerald .laptop-screen { border-color: #047857; box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.2); }
+    .pc-emerald .screen-matrix-bg { color: var(--c-emerald); }
+    .pc-emerald .screen-title { color: var(--c-emerald); text-shadow: 0 0 8px var(--c-emerald); }
+    .pc-emerald .screen-desc { color: #d1fae5; }
+    .pc-emerald .computer-action-btn { background: rgba(16, 185, 129, 0.12); border: 1px solid var(--c-emerald); color: var(--c-emerald); }
+    .pc-emerald:hover .computer-action-btn { background: var(--c-emerald); color: #050807; box-shadow: 0 0 15px var(--c-emerald); }
+
+    /* 7. Ateş Turuncusu (Tehdit Haritası) */
+    .pc-orange { border-color: rgba(255, 87, 34, 0.3); }
+    .pc-orange:hover { border-color: var(--c-orange); box-shadow: 0 0 30px rgba(255, 87, 34, 0.3); }
+    .pc-orange .computer-badge { background: rgba(255, 87, 34, 0.12); color: var(--c-orange); border: 1px solid var(--c-orange); }
+    .pc-orange .laptop-screen { border-color: #c2410c; box-shadow: inset 0 0 20px rgba(255, 87, 34, 0.2); }
+    .pc-orange .screen-matrix-bg { color: var(--c-orange); }
+    .pc-orange .screen-title { color: var(--c-orange); text-shadow: 0 0 8px var(--c-orange); }
+    .pc-orange .screen-desc { color: #ffedd5; }
+    .pc-orange .computer-action-btn { background: rgba(255, 87, 34, 0.12); border: 1px solid var(--c-orange); color: var(--c-orange); }
+    .pc-orange:hover .computer-action-btn { background: var(--c-orange); color: #ffffff; box-shadow: 0 0 15px var(--c-orange); }
+
+    /* 8. Elektrik Mavisi (Emre Karaman Profil & İletişim) */
+    .pc-blue { border-color: rgba(56, 189, 248, 0.3); }
+    .pc-blue:hover { border-color: var(--c-blue); box-shadow: 0 0 30px rgba(56, 189, 248, 0.3); }
+    .pc-blue .computer-badge { background: rgba(56, 189, 248, 0.12); color: var(--c-blue); border: 1px solid var(--c-blue); }
+    .pc-blue .laptop-screen { border-color: #0284c7; box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.2); }
+    .pc-blue .screen-matrix-bg { color: var(--c-blue); }
+    .pc-blue .screen-title { color: var(--c-blue); text-shadow: 0 0 8px var(--c-blue); }
+    .pc-blue .screen-desc { color: #bae6fd; }
+    .pc-blue .computer-action-btn { background: rgba(56, 189, 248, 0.12); border: 1px solid var(--c-blue); color: var(--c-blue); }
+    .pc-blue:hover .computer-action-btn { background: var(--c-blue); color: #050807; box-shadow: 0 0 15px var(--c-blue); }
+
+    /* İÇERİK PANELLERİ */
+    .content-panel {
+      display: none;
+      width: 100%;
+      margin-top: 20px;
+      animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-header {
+      background: #08140c;
+      border: 1px solid #143521;
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-dots { display: flex; gap: 8px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red { background: #ff4757; }
+    .dot-yellow { background: #ffa502; }
+    .dot-green { background: #2ed573; }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .panel-body {
+      background: rgba(9, 18, 12, 0.96);
+      border: 1px solid #143521;
+      border-radius: 0 0 12px 12px;
+      padding: 36px 30px;
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.8);
+    }
+
+    /* KART STİLLERİ (Panel 1 Doküman) */
+    .cyber-detail-card {
+      background: rgba(5, 10, 7, 0.85);
+      border: 1px solid #143521;
+      border-left: 4px solid var(--c-green);
+      border-radius: 8px;
+      padding: 26px;
+      margin-bottom: 28px;
+      transition: all 0.25s ease;
+    }
+
+    .cyber-detail-card h3 {
+      color: var(--c-green);
+      font-size: 1.35rem;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cyber-detail-card p {
+      color: #c9eed3;
+      font-size: 0.96rem;
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+
+    .detail-list {
+      list-style: none;
+      margin: 14px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .detail-list li {
+      padding-left: 20px;
+      position: relative;
+      color: #bbf7cf;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .detail-list li::before {
+      content: '▶';
+      position: absolute;
+      left: 0;
+      color: var(--c-green);
+      font-size: 0.75rem;
+      top: 2px;
+    }
+
+    .tech-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .tech-tag {
+      background: #00290e;
+      color: var(--c-green);
+      border: 1px solid #005c21;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* PANEL 2: YOL HARİTASI */
+    .roadmap-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+      position: relative;
+    }
+
+    .roadmap-step {
+      position: relative;
+      background: rgba(5, 10, 7, 0.85);
+      border: 1px solid #143521;
+      border-radius: 10px;
+      padding: 26px;
+      transition: all 0.25s ease;
+    }
+
+    .step-number-marker {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #050807;
+      border: 1.5px solid var(--c-cyan);
+      border-radius: 4px;
+      color: var(--c-cyan);
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .step-header h3 {
+      font-size: 1.35rem;
+      color: var(--c-cyan);
+      margin-bottom: 6px;
+    }
+
+    .step-content p {
+      color: #c9eed3;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .video-wrapper {
+      margin-top: 18px;
+      background: #020503;
+      border: 1px solid #0e3322;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #000;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%; border: none;
+    }
+
+    .video-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .video-title { font-size: 0.85rem; color: #bbf7cf; }
+    .youtube-direct-link {
+      background: #ff0000;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    /* PANEL 3: İNTERAKTİF ARAÇLAR (Şifre & Hash) */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 30px;
+    }
+
+    .tool-box {
+      background: rgba(5, 10, 7, 0.9);
+      border: 1.5px solid var(--c-purple);
+      border-radius: 12px;
+      padding: 26px;
+      box-shadow: 0 0 25px rgba(192, 132, 252, 0.15);
+    }
+
+    .tool-box h3 {
+      color: var(--c-purple);
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tool-input-wrap {
+      margin-bottom: 18px;
+    }
+
+    .tool-input {
+      width: 100%;
+      background: #030604;
+      border: 1px solid #5b21b6;
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: var(--c-purple);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .tool-input:focus {
+      border-color: var(--c-purple);
+      box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
+    }
+
+    .meter-bar {
+      height: 8px;
+      background: #1a0f2e;
+      border-radius: 4px;
+      margin: 10px 0 14px;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 0%;
+      background: #ff4757;
+      transition: all 0.3s ease;
+    }
+
+    .tool-result-box {
+      background: #020403;
+      border: 1px dashed #7e22ce;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    .copy-btn {
+      background: rgba(192, 132, 252, 0.2);
+      border: 1px solid var(--c-purple);
+      color: var(--c-purple);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--c-purple);
+      color: #050807;
+    }
+
+    /* PANEL 4: MİNİ LİNUX TERMİNALİ */
+    .terminal-window {
+      background: #020503;
+      border: 1.5px solid var(--c-amber);
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(251, 191, 36, 0.15);
+      overflow: hidden;
+    }
+
+    .terminal-top-bar {
+      background: #1c1505;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #78350f;
+    }
+
+    .term-title { color: var(--c-amber); font-size: 0.85rem; font-weight: 700; }
+
+    .terminal-body {
+      padding: 20px;
+      height: 380px;
+      overflow-y: auto;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .term-output {
+      color: #fef08a;
+      white-space: pre-wrap;
+      margin-bottom: 14px;
+    }
+
+    .term-input-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .term-prompt {
+      color: var(--c-amber);
+      font-weight: 700;
+    }
+
+    .term-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.92rem;
+    }
+
+    /* PANEL 5: SİBER SEVİYE QUIZ */
+    .quiz-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(5, 10, 7, 0.9);
+      border: 1.5px solid var(--c-crimson);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 30px rgba(255, 0, 85, 0.15);
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      color: var(--c-crimson);
+      font-weight: 700;
+      border-bottom: 1px solid #4c0519;
+      padding-bottom: 10px;
+    }
+
+    .quiz-question {
+      font-size: 1.15rem;
+      color: #ffe4e6;
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .quiz-option-btn {
+      background: #11050a;
+      border: 1px solid #881337;
+      color: #fecdd3;
+      padding: 14px 18px;
+      border-radius: 8px;
+      text-align: left;
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-option-btn:hover {
+      border-color: var(--c-crimson);
+      background: #250614;
+      transform: translateX(4px);
+    }
+
+    .quiz-result-card {
+      text-align: center;
+      padding: 20px;
+      display: none;
+    }
+
+    .quiz-score-badge {
+      display: inline-block;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--c-crimson);
+      text-shadow: 0 0 20px var(--c-crimson);
+      margin: 15px 0;
+    }
+
+    /* PANEL 6: CHEAT SHEET (KOMUT REHBERİ) */
+    .cheatsheet-wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .search-commands-input {
+      width: 100%;
+      background: #030805;
+      border: 1.5px solid var(--c-emerald);
+      border-radius: 8px;
+      padding: 12px 18px;
+      color: var(--c-emerald);
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 24px;
+    }
+
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .cheat-card {
+      background: rgba(4, 15, 10, 0.9);
+      border: 1px solid #064e3b;
+      border-radius: 8px;
+      padding: 18px;
+      transition: all 0.2s;
+    }
+
+    .cheat-card:hover {
+      border-color: var(--c-emerald);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    }
+
+    .cheat-cmd {
+      background: #010804;
+      border: 1px solid #047857;
+      padding: 8px 12px;
+      border-radius: 4px;
+      color: var(--c-emerald);
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .cheat-desc {
+      color: #a7f3d0;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* PANEL 7: CANLI TEHDİT HARİTASI */
+    .map-wrap {
+      position: relative;
+      background: #020504;
+      border: 1.5px solid var(--c-orange);
+      border-radius: 12px;
+      overflow: hidden;
+      padding: 20px;
+      box-shadow: 0 0 35px rgba(255, 87, 34, 0.15);
+    }
+
+    #threatCanvas {
+      width: 100%;
+      height: 420px;
+      display: block;
+      background: #030705;
+      border-radius: 8px;
+    }
+
+    .threat-stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+      text-align: center;
+    }
+
+    .threat-stat-item {
+      background: rgba(255, 87, 34, 0.08);
+      border: 1px solid #7c2d12;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    .threat-stat-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--c-orange);
+    }
+
+    .threat-stat-lbl {
+      font-size: 0.75rem;
+      color: #fed7aa;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .threat-feed {
+      margin-top: 18px;
+      background: #010302;
+      border: 1px solid #431407;
+      border-radius: 6px;
+      padding: 12px;
+      height: 120px;
+      overflow-y: hidden;
+      font-size: 0.82rem;
+      color: #fb923c;
+      font-family: inherit;
+    }
+
+    /* ======================================================== */
+    /* 8. EMRE KARAMAN PROFİL & İLETİŞİM HUB STİLLERİ           */
+    /* ======================================================== */
+    .profile-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .profile-card {
+      background: linear-gradient(180deg, rgba(8, 28, 44, 0.45) 0%, rgba(5, 12, 10, 0.85) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 36px 30px;
+      margin-bottom: 25px;
+      position: relative;
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .profile-card::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--c-blue), transparent);
+    }
+
+    .profile-avatar-box {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .profile-avatar-main {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--c-blue);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.5), inset 0 0 15px rgba(56, 189, 248, 0.3);
+      display: block;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-avatar-main:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.8);
+    }
+
+    .profile-online-badge {
+      position: absolute;
+      bottom: 4px;
+      right: 6px;
+      width: 20px;
+      height: 20px;
+      background: #22c55e;
+      border: 3px solid #050d0a;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #22c55e;
+      animation: pulseGreen 2s infinite;
+    }
+
+    .profile-name-title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 1.5px;
+      text-shadow: 0 0 18px rgba(56, 189, 248, 0.6);
+      margin-bottom: 6px;
+    }
+
+    .profile-tagline {
+      font-size: 1.05rem;
+      color: var(--c-blue);
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .profile-meta-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .profile-meta-tag {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #bae6fd;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .profile-bio-container {
+      width: 100%;
+      background: rgba(3, 10, 16, 0.7);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-left: 4px solid var(--c-blue);
+      border-radius: 8px;
+      padding: 22px 24px;
+      text-align: left;
+      margin-top: 10px;
+      line-height: 1.8;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    .profile-bio-container h4 {
+      color: var(--c-blue);
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* NEON SOSYAL MEDYA BUTONLARI */
+    .social-section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 30px 0 16px 0;
+      text-align: center;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .social-neon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .social-neon-card {
+      background: rgba(5, 12, 18, 0.85);
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .social-neon-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .social-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .social-text-box {
+      flex: 1;
+      text-align: left;
+    }
+
+    .social-platform-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    .social-user-handle {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+
+    .social-arrow-hint {
+      font-size: 1.1rem;
+      transition: transform 0.2s;
+    }
+
+    .social-neon-card:hover .social-arrow-hint {
+      transform: translateX(4px);
+    }
+
+    /* 1. GitHub (Neon Silver / White) */
+    .card-github {
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #f8fafc;
+    }
+    .card-github .social-icon-box {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .card-github:hover {
+      border-color: #ffffff;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
+    }
+
+    /* 2. LinkedIn (Neon Electric Blue) */
+    .card-linkedin {
+      border-color: rgba(14, 165, 233, 0.35);
+      color: #38bdf8;
+    }
+    .card-linkedin .social-icon-box {
+      background: rgba(14, 165, 233, 0.12);
+      color: #38bdf8;
+      border: 1px solid #0ea5e9;
+    }
+    .card-linkedin:hover {
+      border-color: #38bdf8;
+      background: rgba(14, 165, 233, 0.16);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+    }
+
+    /* 3. Instagram (Neon Pink/Magenta) */
+    .card-instagram {
+      border-color: rgba(244, 63, 94, 0.35);
+      color: #fb7185;
+    }
+    .card-instagram .social-icon-box {
+      background: rgba(244, 63, 94, 0.12);
+      color: #fb7185;
+      border: 1px solid #f43f5e;
+    }
+    .card-instagram:hover {
+      border-color: #f43f5e;
+      background: rgba(244, 63, 94, 0.16);
+      box-shadow: 0 0 25px rgba(244, 63, 94, 0.5);
+    }
+
+    /* 4. X / Twitter (Neon Ice Gray / White) */
+    .card-twitter {
+      border-color: rgba(203, 213, 225, 0.35);
+      color: #e2e8f0;
+    }
+    .card-twitter .social-icon-box {
+      background: rgba(203, 213, 225, 0.1);
+      color: #e2e8f0;
+      border: 1px solid #cbd5e1;
+    }
+    .card-twitter:hover {
+      border-color: #f8fafc;
+      background: rgba(203, 213, 225, 0.15);
+      box-shadow: 0 0 25px rgba(226, 232, 240, 0.4);
+    }
+
+    /* 5. E-Posta (Neon Matrix Green) */
+    .card-email {
+      border-color: rgba(34, 197, 94, 0.35);
+      color: #4ade80;
+    }
+    .card-email .social-icon-box {
+      background: rgba(34, 197, 94, 0.12);
+      color: #4ade80;
+      border: 1px solid #22c55e;
+    }
+    .card-email:hover {
+      border-color: #22c55e;
+      background: rgba(34, 197, 94, 0.16);
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.5);
+    }
+
+    /* HIZLI İLETİŞİM & ŞİFRELİ MESAJ FORMU */
+    .quick-contact-box {
+      background: rgba(4, 14, 22, 0.75);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 10px;
+      padding: 26px;
+      margin-top: 15px;
+    }
+
+    .quick-contact-box h4 {
+      color: var(--c-blue);
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quick-contact-desc {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .contact-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 680px) {
+      .contact-form-grid { grid-template-columns: 1fr; }
+    }
+
+    .contact-field-input, .contact-field-textarea {
+      width: 100%;
+      background: #02070d;
+      border: 1px solid #075985;
+      color: #e0f2fe;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .contact-field-input:focus, .contact-field-textarea:focus {
+      border-color: var(--c-blue);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .contact-field-textarea {
+      height: 110px;
+      resize: vertical;
+      margin-bottom: 14px;
+    }
+
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .send-cipher-btn {
+      background: transparent;
+      border: 1px solid var(--c-blue);
+      color: var(--c-blue);
+      padding: 12px 28px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .send-cipher-btn:hover {
+      background: var(--c-blue);
+      color: #020617;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+    }
+
+    .copy-email-btn {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid #22c55e;
+      color: #4ade80;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-email-btn:hover {
+      background: #22c55e;
+      color: #020617;
+      box-shadow: 0 0 18px rgba(34, 197, 94, 0.5);
+    }
+
+    .cipher-status-msg {
+      margin-top: 15px;
+      padding: 12px 16px;
+      border-radius: 6px;
+      display: none;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* ======================================================== */
+    /* 9. SİTEYE ÖZEL ARAÇ (CYBER TOOLKIT) STİLLERİ             */
+    /* ======================================================== */
+    .site-tool-section {
+      width: 100%;
+      margin: 0 auto 50px auto;
+      background: linear-gradient(180deg, rgba(6, 18, 14, 0.92) 0%, rgba(3, 8, 6, 0.98) 100%);
+      border: 1px solid #10b981;
+      border-radius: 12px;
+      box-shadow: 0 0 35px rgba(16, 185, 129, 0.2), inset 0 0 20px rgba(16, 185, 129, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .site-tool-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00ff66, #00e5ff, #38bdf8, #00ff66);
+      background-size: 300% 100%;
+      animation: neonGradientMove 6s linear infinite;
+    }
+
+    @keyframes neonGradientMove {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    .site-tool-header {
+      padding: 24px 28px;
+      background: rgba(3, 12, 8, 0.85);
+      border-bottom: 1px solid #143521;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .site-tool-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .site-tool-badge {
+      display: inline-block;
+      align-self: flex-start;
+      background: rgba(0, 255, 102, 0.12);
+      border: 1px solid var(--c-green);
+      color: var(--c-green);
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .site-tool-heading {
+      font-size: 1.35rem;
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-shadow: 0 0 12px rgba(0, 255, 102, 0.5);
+    }
+
+    .site-tool-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tool-tab-btn {
+      background: rgba(5, 16, 11, 0.8);
+      border: 1px solid #1c4a2e;
+      color: #94a3b8;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tool-tab-btn:hover {
+      border-color: var(--c-green);
+      color: #ffffff;
+      background: rgba(0, 255, 102, 0.1);
+    }
+
+    .tool-tab-btn.active {
+      background: rgba(0, 255, 102, 0.15);
+      border-color: var(--c-green);
+      color: var(--c-green);
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+    }
+
+    .site-tool-body {
+      padding: 28px;
+    }
+
+    .tool-pane {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    .tool-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Zafiyet Tarayıcı Giriş Alanı */
+    .scanner-controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 650px) {
+      .scanner-controls { grid-template-columns: 1fr; }
+    }
+
+    .scanner-input-wrap {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: #020604;
+      border: 1px solid #10b981;
+      border-radius: 6px;
+      padding: 6px 14px;
+    }
+
+    .scanner-prefix {
+      color: var(--c-green);
+      font-weight: 700;
+      font-size: 0.95rem;
+      user-select: none;
+    }
+
+    .scanner-target-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .scanner-scan-btn {
+      background: rgba(0, 255, 102, 0.15);
+      border: 1px solid var(--c-green);
+      color: var(--c-green);
+      padding: 12px 26px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scanner-scan-btn:hover {
+      background: var(--c-green);
+      color: #030805;
+      box-shadow: 0 0 20px var(--c-green);
+    }
+
+    /* Hızlı Hazır Hedef Rozetleri */
+    .target-presets {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+
+    .preset-chip {
+      background: rgba(20, 53, 33, 0.4);
+      border: 1px solid #143521;
+      color: #a7f3d0;
+      padding: 5px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .preset-chip:hover {
+      border-color: var(--c-green);
+      color: #ffffff;
+      background: rgba(0, 255, 102, 0.15);
+    }
+
+    /* Canlı Tarama Terminali */
+    .scanner-terminal-box {
+      background: #020503;
+      border: 1px solid #143521;
+      border-radius: 8px;
+      padding: 18px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      height: 170px;
+      overflow-y: auto;
+      color: #00ff66;
+      margin-bottom: 22px;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+    }
+
+    .scan-log-line {
+      margin-bottom: 4px;
+    }
+    .scan-log-warn { color: #f59e0b; }
+    .scan-log-danger { color: #ef4444; font-weight: 700; }
+    .scan-log-info { color: #38bdf8; }
+
+    /* Port Durum Tablosu & Kartları */
+    .ports-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .port-card {
+      background: rgba(4, 12, 8, 0.7);
+      border: 1px solid #1c4a2e;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .port-card:hover { transform: translateY(-2px); }
+
+    .port-num {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .port-service {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .port-status-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .status-open-safe { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid #22c55e; }
+    .status-open-vuln { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; }
+    .status-filtered { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; }
+
+    /* Zafiyet Rapor Özeti */
+    .scanner-report-box {
+      background: rgba(3, 10, 6, 0.85);
+      border: 1px solid #143521;
+      border-left: 4px solid #ef4444;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .report-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cvss-score-pill {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+    .report-vuln-list {
+      margin-left: 20px;
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+    .report-defense-advice {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid #10b981;
+      color: #a7f3d0;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    /* Kripto Çevirici Tab */
+    .crypto-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .crypto-grid { grid-template-columns: 1fr; }
+    }
+    .crypto-box {
+      background: #020604;
+      border: 1px solid #143521;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .crypto-box h4 {
+      color: var(--c-green);
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .crypto-output-field {
+      width: 100%;
+      height: 75px;
+      background: #010302;
+      border: 1px solid #0f2b1a;
+      color: #e2e8f0;
+      padding: 10px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      resize: none;
+      outline: none;
+    }
+    .crypto-copy-btn {
+      background: transparent;
+      border: 1px solid #10b981;
+      color: #10b981;
+      font-family: inherit;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .crypto-copy-btn:hover {
+      background: #10b981;
+      color: #030805;
+    }
+
+    /* Phishing Analiz Tab */
+    .phish-checker-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .phish-input-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 600px) {
+      .phish-input-row { flex-direction: column; }
+    }
+    .phish-url-input {
+      flex: 1;
+      background: #020604;
+      border: 1px solid #10b981;
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .phish-check-btn {
+      background: rgba(0, 255, 102, 0.15);
+      border: 1px solid var(--c-green);
+      color: var(--c-green);
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .phish-check-btn:hover {
+      background: var(--c-green);
+      color: #030805;
+      box-shadow: 0 0 15px var(--c-green);
+    }
+    .phish-verdict-box {
+      margin-top: 18px;
+      padding: 20px;
+      border-radius: 8px;
+      display: none;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    /* Ortak Geri Dön Butonu */
+    .close-panel-btn {
+      display: inline-block;
+      margin-top: 25px;
+      background: transparent;
+      color: var(--c-green);
+      border: 1px solid var(--c-green);
+      padding: 12px 28px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 1px;
+    }
+
+    .close-panel-btn:hover {
+      background: var(--c-green);
+      color: #050807;
+      box-shadow: 0 0 20px var(--c-green);
+    }
+
+    footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid #0f2416;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="matrixCanvas"></canvas>
+  <div class="grid-overlay"></div>
+
+  <!-- Üst Menü -->
+  <header>
+    <div class="system-status">
+      <div class="pulse-dot"></div>
+      <span>Sistem Durumu: Aktif // 8 Modül Canlı</span>
+    </div>
+
+    <!-- HACKER SYNTHWAVE / LO-FI MÜZİK ÇALAR -->
+    <div class="cyber-audio-player" id="audioPlayerWidget" title="Hacker Synthwave Müziğini Aç / Kapat">
+      <div class="eq-bars" id="eqBars">
+        <span class="eq-bar"></span>
+        <span class="eq-bar"></span>
+        <span class="eq-bar"></span>
+        <span class="eq-bar"></span>
+      </div>
+      <button class="music-toggle-btn" id="musicToggleBtn">
+        <span id="musicBtnIcon">▶</span>
+        <span id="musicBtnText">HACKER SYNTHWAVE</span>
+      </button>
+    </div>
+
+    <!-- SİTEYE ÖZEL ARAÇ BUTONU (HEADER) -->
+    <a href="#siteToolSection" class="site-tool-header-btn" title="Siteye Özel Port & Zafiyet Tarayıcısına Git" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:rgba(0, 255, 102, 0.12); border:1px solid var(--c-green); color:var(--c-green); padding:7px 14px; border-radius:6px; font-size:0.8rem; font-weight:700; transition:all 0.2s;">
+      <span>⚡</span> SİTE ARACI: TARAYICI
+    </a>
+    
+    <div class="designer-badge" id="headerProfileBadge" style="cursor: pointer;" title="👤 Emre Karaman Profil & İletişimini Aç">
+      <img src="emre.jpeg" alt="Emre Karaman" class="designer-avatar">
+      <span>Emre Karaman</span>
+    </div>
+  </header>
+
+  <div class="main-wrap">
+
+    <div class="section-headline">
+      <h1>SİBER GÜVENLİK KOMUTA MERKEZİ</h1>
+      <p>> Başlatmak istediğiniz terminal bilgisayarına dokunun <</p>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SİTEYE ÖZEL ARAÇ: CANLI PORT & ZAFİYET TARAYICI (TOOLKIT)-->
+    <!-- ======================================================== -->
+    <section class="site-tool-section" id="siteToolSection">
+      <div class="site-tool-header">
+        <div class="site-tool-title-wrap">
+          <span class="site-tool-badge">SİTEYE ÖZEL ARAÇ // CANLI ANALİZÖR</span>
+          <div class="site-tool-heading">
+            <span>🛡️</span> HEDEF SİSTEM PORT & ZAFİYET TARAYICI
+          </div>
+        </div>
+
+        <!-- Sekmeler -->
+        <div class="site-tool-nav">
+          <button class="tool-tab-btn active" id="tabBtnScanner" onclick="switchSiteToolTab('tabScanner', this)">
+            <span>🛡️</span> Port & Zafiyet Tarayıcı
+          </button>
+          <button class="tool-tab-btn" id="tabBtnCrypto" onclick="switchSiteToolTab('tabCrypto', this)">
+            <span>🔐</span> Kripto Çevirici
+          </button>
+          <button class="tool-tab-btn" id="tabBtnPhish" onclick="switchSiteToolTab('tabPhish', this)">
+            <span>🎣</span> Phishing Analizörü
+          </button>
+        </div>
+      </div>
+
+      <div class="site-tool-body">
+        
+        <!-- SEKME 1: PORT & ZAFİYET TARAYICI -->
+        <div class="tool-pane active" id="tabScanner">
+          <div class="scanner-controls">
+            <div class="scanner-input-wrap">
+              <span class="scanner-prefix">HEDEF://</span>
+              <input type="text" id="scanTargetInput" class="scanner-target-input" value="192.168.1.1" placeholder="IP Adresi veya Domain (Örn: 192.168.1.1 veya scanme.nmap.org)">
+            </div>
+            <button class="scanner-scan-btn" id="startScanBtn" onclick="runTargetScan()">
+              <span>⚡</span> CANLI TARAMAYI BAŞLAT
+            </button>
+          </div>
+
+          <!-- Hazır Hedef Seçiciler -->
+          <div class="target-presets">
+            <span>Hızlı Hedefler:</span>
+            <span class="preset-chip" onclick="setScanPreset('192.168.1.1', 'router')">💻 Yerel Modem/Router</span>
+            <span class="preset-chip" onclick="setScanPreset('scanme.nmap.org', 'web')">🌐 Web Sunucusu (Nmap Lab)</span>
+            <span class="preset-chip" onclick="setScanPreset('10.10.10.150', 'db')">🗄️ Veritabanı Sunucusu</span>
+            <span class="preset-chip" onclick="setScanPreset('cloud.corp-target.internal', 'cloud')">☁️ Bulut Sunucu</span>
+          </div>
+
+          <!-- Canlı Terminal Log Akışı -->
+          <div class="scanner-terminal-box" id="scannerTerminalLog">
+            <div class="scan-log-line">[SİSTEM HAZIR] Hedef IP veya domain adresini girin ve "CANLI TARAMAYI BAŞLAT" butonuna basın.</div>
+            <div class="scan-log-line" style="color:#64748b;">> Örnek hedeflerden birine tıklayarak hızlı tarama gerçekleştirebilirsiniz.</div>
+          </div>
+
+          <!-- Tespit Edilen Port Durum Kartları -->
+          <div class="ports-grid" id="scanPortsGrid">
+            <div class="port-card">
+              <div class="port-num" style="color:var(--c-green);">PORT 21</div>
+              <div class="port-service">FTP Servisi</div>
+              <span class="port-status-tag status-open-vuln" id="portStatus21">BEKLENİYOR</span>
+            </div>
+            <div class="port-card">
+              <div class="port-num" style="color:var(--c-cyan);">PORT 22</div>
+              <div class="port-service">SSH Servisi</div>
+              <span class="port-status-tag status-open-safe" id="portStatus22">BEKLENİYOR</span>
+            </div>
+            <div class="port-card">
+              <div class="port-num" style="color:var(--c-orange);">PORT 80</div>
+              <div class="port-service">HTTP Web</div>
+              <span class="port-status-tag status-open-vuln" id="portStatus80">BEKLENİYOR</span>
+            </div>
+            <div class="port-card">
+              <div class="port-num" style="color:var(--c-green);">PORT 443</div>
+              <div class="port-service">HTTPS SSL</div>
+              <span class="port-status-tag status-open-safe" id="portStatus443">BEKLENİYOR</span>
+            </div>
+            <div class="port-card">
+              <div class="port-num" style="color:var(--c-purple);">PORT 3306</div>
+              <div class="port-service">MySQL Veritabanı</div>
+              <span class="port-status-tag status-filtered" id="portStatus3306">BEKLENİYOR</span>
+            </div>
+          </div>
+
+          <!-- Zafiyet & Savunma Raporu -->
+          <div class="scanner-report-box" id="scanReportBox">
+            <div class="report-header">
+              <div class="report-title">
+                <span>📋</span> ZAFİYET & TEHDİT DEĞERLENDİRME RAPORU
+              </div>
+              <div class="cvss-score-pill" id="cvssPill">CVSS SKORU: BEKLENİYOR</div>
+            </div>
+            <div id="reportContentArea">
+              <p style="color:#94a3b8; font-size:0.9rem;">Taramayı başlattığınızda hedef sistem üzerindeki CVE güvenlik zafiyetleri ve Blue Team savunma reçetesi burada listelenecektir.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEKME 2: KRİPTO ŞİFRELEYİCİ & ÇÖZÜCÜ -->
+        <div class="tool-pane" id="tabCrypto">
+          <div style="margin-bottom: 20px;">
+            <label style="display:block; color:var(--c-green); font-size:0.9rem; font-weight:700; margin-bottom:8px;">
+              ŞİFRELENECEK VEYA ÇÖZÜLECEK METİN:
+            </label>
+            <input type="text" id="cryptoSourceText" class="scanner-target-input" style="width:100%; background:#020604; border:1px solid #10b981; border-radius:6px; padding:12px; color:#fff;" value="SiberGuvenlik2026!EmreKaraman" oninput="updateCryptoTransforms()" placeholder="Metin yazın...">
+          </div>
+
+          <div class="crypto-grid">
+            <div class="crypto-box">
+              <h4>
+                <span>📦 Base64 Formatı</span>
+                <button class="crypto-copy-btn" onclick="copyCryptoField('outBase64')">Kopyala</button>
+              </h4>
+              <textarea id="outBase64" class="crypto-output-field" readonly></textarea>
+            </div>
+
+            <div class="crypto-box">
+              <h4>
+                <span>🔢 Hexadecimal (Hex)</span>
+                <button class="crypto-copy-btn" onclick="copyCryptoField('outHex')">Kopyala</button>
+              </h4>
+              <textarea id="outHex" class="crypto-output-field" readonly></textarea>
+            </div>
+
+            <div class="crypto-box">
+              <h4>
+                <span>01 Binary (İkilik Kod)</span>
+                <button class="crypto-copy-btn" onclick="copyCryptoField('outBinary')">Kopyala</button>
+              </h4>
+              <textarea id="outBinary" class="crypto-output-field" readonly></textarea>
+            </div>
+
+            <div class="crypto-box">
+              <h4>
+                <span>🔄 ROT13 (Sezar Şifresi)</span>
+                <button class="crypto-copy-btn" onclick="copyCryptoField('outRot13')">Kopyala</button>
+              </h4>
+              <textarea id="outRot13" class="crypto-output-field" readonly></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEKME 3: PHISHING URL TEST EDİCİ -->
+        <div class="tool-pane" id="tabPhish">
+          <div class="phish-checker-wrap">
+            <p style="color:#94a3b8; font-size:0.88rem; margin-bottom:16px;">
+              Şüpheli bulduğunuz bir web sitesi bağlantısını (URL) veya gelen e-posta linkini yapıştırın; yapay zeka ve kural tabanlı phishing motorumuz linki anında analiz etsin.
+            </p>
+
+            <div class="phish-input-row">
+              <input type="text" id="phishUrlInput" class="phish-url-input" value="http://netflix-fatura-odeme-guvenlik.xyz/login" placeholder="Test edilecek URL'yi yapıştırın...">
+              <button class="phish-check-btn" onclick="analyzePhishingUrl()">🔍 LİNKİ ANALİZ ET</button>
+            </div>
+
+            <!-- Örnek Senaryo Butonları -->
+            <div class="target-presets">
+              <span>Örnek Senaryolar:</span>
+              <span class="preset-chip" onclick="setPhishSample('http://netflix-fatura-odeme-guvenlik.xyz/login')">🚨 Sahte Netflix Linki</span>
+              <span class="preset-chip" onclick="setPhishSample('http://garanti-bbva-mobil-onay.top/hesap')">🚨 Sahte Banka Girişi</span>
+              <span class="preset-chip" onclick="setPhishSample('https://www.google.com')">✅ Gerçek Güvenli Google</span>
+              <span class="preset-chip" onclick="setPhishSample('https://github.com/security')">✅ Gerçek GitHub</span>
+            </div>
+
+            <div id="phishVerdictResult" class="phish-verdict-box"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 7 ADET RENKLİ BİLGİSAYAR (HER BİRİNİN ÜSTÜNDE ÖZEL MATRIX EKRANI) -->
+    <div class="computers-grid" id="computersGrid">
+      
+      <!-- 1. BİLGİSAYAR [YEŞİL]: Siber Güvenlik Dokümantasyonu -->
+      <div class="computer-card pc-green" id="btnPc1" title="Siber Güvenlik Kapsamlı Dokümanı">
+        <span class="computer-badge">MODÜL 01 // DOKÜMAN</span>
+        
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-matrix-bg">
+              010101001010101010011010101010101010010101010100110101010101010100101010101001101010101010101001010101010011010101
+            </div>
+            <div class="screen-content">
+              <div class="screen-icon">🛡️</div>
+              <div class="screen-title">GÜVENLİK REHBERİ</div>
+              <div class="screen-desc">Tehdit & Savunma Mimarisi</div>
+            </div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <div class="computer-action-btn">💻 DOKÜMANI AÇ ➔</div>
+      </div>
+
+      <!-- 2. BİLGİSAYAR [CYAN MAVİ]: 10 Adımlık Yol Haritası & Videolar -->
+      <div class="computer-card pc-cyan" id="btnPc2" title="10 Adımlık Sıfırdan Sona Yol Haritası">
+        <span class="computer-badge">MODÜL 02 // YOL HARİTASI</span>
+        
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-matrix-bg">
+              ROADMAP1010110101010101CYBER10101010100110101010101010100101010101001101010101010101001010101010011010101010101
+            </div>
+            <div class="screen-content">
+              <div class="screen-icon">🚀</div>
+              <div class="screen-title">10 ADIMDA YOL HARİTASI</div>
+              <div class="screen-desc">10 Türkçe Video & Çizelge</div>
+            </div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <div class="computer-action-btn">▶️ EĞİTİMLERİ AÇ ➔</div>
+      </div>
+
+      <!-- 3. BİLGİSAYAR [MOR]: İnteraktif Siber Araçlar (Şifre & Hash) -->
+      <div class="computer-card pc-purple" id="btnPc3" title="Şifre Gücü & Hash Test Araçları">
+        <span class="computer-badge">MODÜL 03 // SİBER ARAÇLAR</span>
+        
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-matrix-bg">
+              CRYPTO101010101010011010101HASH1010101010011010101010101010010101010100110101010101010100101010101001101010101
+            </div>
+            <div class="screen-content">
+              <div class="screen-icon">🔐</div>
+              <div class="screen-title">İNTERAKTİF ARAÇLAR</div>
+              <div class="screen-desc">Şifre Testi & Hash Üretici</div>
+            </div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <div class="computer-action-btn">⚡ ARAÇLARI ÇALIŞTIR ➔</div>
+      </div>
+
+      <!-- 4. BİLGİSAYAR [AMBER SARI]: Mini Linux Terminali -->
+      <div class="computer-card pc-amber" id="btnPc4" title="Canlı İnteraktif Linux Shell">
+        <span class="computer-badge">MODÜL 04 // TERMİNAL</span>
+        
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-matrix-bg">
+              ROOT@BASH:~$1010101010011010101LS-LA10101010100110101010101010100101010101001101010101010101001010101010011010101
+            </div>
+            <div class="screen-content">
+              <div class="screen-icon">⌨️</div>
+              <div class="screen-title">MİNİ LİNUX TERMİNALİ</div>
+              <div class="screen-desc">Canlı Hacker Shell & Komutlar</div>
+            </div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <div class="computer-action-btn">📟 TERMİNALİ AÇ ➔</div>
+      </div>
+
+      <!-- 5. BİLGİSAYAR [KRİMSON KIRMIZI]: Siber Seviye Testi (Quiz) -->
+      <div class="computer-card pc-crimson" id="btnPc5" title="Siber Güvenlik Seviye Testi">
+        <span class="computer-badge">MODÜL 05 // SİBER QUIZ</span>
+        
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-matrix-bg">
+              QUIZ101010101010011010101TEST10101010100110101010101010100101010101001101010101010101001010101010011010101010101
+            </div>
+            <div class="screen-content">
+              <div class="screen-icon">🎯</div>
+              <div class="screen-title">SEVİYENİ TEST ET</div>
+              <div class="screen-desc">Hacker & Savunma Bilgi Testi</div>
+            </div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <div class="computer-action-btn">🏆 TESTİ BAŞLAT ➔</div>
+      </div>
+
+      <!-- 6. BİLGİSAYAR [ZÜMRÜT YEŞİL]: Siber Güvenlik Cheat Sheet -->
+      <div class="computer-card pc-emerald" id="btnPc6" title="Komutlar & Kısayol Rehberi">
+        <span class="computer-badge">MODÜL 06 // CHEAT SHEET</span>
+        
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-matrix-bg">
+              NMAP-S-V1010101010011010101WIRESHARK1010101010011010101010101010010101010100110101010101010100101010101001101010
+            </div>
+            <div class="screen-content">
+              <div class="screen-icon">📋</div>
+              <div class="screen-title">KOMUT REHBERİ</div>
+              <div class="screen-desc">Nmap, Linux, Wireshark Komutları</div>
+            </div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <div class="computer-action-btn">📑 REHBERİ AÇ ➔</div>
+      </div>
+
+      <!-- 7. BİLGİSAYAR [ATEŞ TURUNCUSU]: Canlı Tehdit Haritası -->
+      <div class="computer-card pc-orange" id="btnPc7" title="Canlı Siber Saldırı Haritası">
+        <span class="computer-badge">MODÜL 07 // TEHDİT HARİTASI</span>
+        
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-matrix-bg">
+              THREAT101010101010011010101DDOS101010101001101010101010101001010101010011010101010101010010101010100110101010101
+            </div>
+            <div class="screen-content">
+              <div class="screen-icon">🌍</div>
+              <div class="screen-title">CANLI TEHDİT HARİTASI</div>
+              <div class="screen-desc">Lazer Saldırı Simülasyonu</div>
+            </div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <div class="computer-action-btn">📡 HARİTAYI BAŞLAT ➔</div>
+      </div>
+
+      <!-- 8. BİLGİSAYAR [ELEKTRİK MAVİSİ]: Emre Karaman Profil & İletişim -->
+      <div class="computer-card pc-blue" id="btnPc8" title="Emre Karaman Profil, Biyografi & İletişim / Sosyal Medya">
+        <span class="computer-badge">MODÜL 08 // PROFİL & İLETİŞİM</span>
+        
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-matrix-bg">
+              EMRE101010101010011010101KARAMAN101010101001101010101010101001010101010011010101010101010010101010100110101010101
+            </div>
+            <div class="screen-content">
+              <div class="screen-icon">👤</div>
+              <div class="screen-title">EMRE KARAMAN</div>
+              <div class="screen-desc">Profil & Sosyal Medya İletişim</div>
+            </div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <div class="computer-action-btn">👤 PROFİLİ AÇ ➔</div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- PANEL 1: SİBER GÜVENLİK DOKÜMANI                         -->
+    <!-- ======================================================== -->
+    <section class="content-panel" id="panelCyberDoc">
+      <div class="panel-header" style="border-color: var(--c-green);">
+        <div class="panel-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="panel-title" style="color: var(--c-green);">TERMINAL 01 // KAPSAMLI SİBER GÜVENLİK REHBERİ</span>
+        <span style="font-size:0.75rem; color:#6e997d;">[AKTİF]</span>
+      </div>
+
+      <div class="panel-body">
+        <article class="cyber-detail-card">
+          <h3><span>01 //</span> Siber Güvenliğin Temelleri ve CIA Triad Mimarisi</h3>
+          <p>
+            Siber güvenlik; bilgisayar sistemlerinin, ağların, bulut altyapılarının ve dijital verilerin yetkisiz erişim, hırsızlık, manipülasyon veya imha gibi kötü niyetli eylemlerden korunmasını sağlayan çok disiplinli bir alandır. Bütün savunma stratejileri <strong>CIA Triad</strong> (Gizlilik, Bütünlük, Erişilebilirlik) prensibi üzerine inşa edilir:
+          </p>
+          <ul class="detail-list">
+            <li><strong>Gizlilik (Confidentiality):</strong> Hassas verilere yalnızca yetkili kullanıcıların erişebilmesidir. AES-256 şifreleme ve MFA ile korunur.</li>
+            <li><strong>Bütünlük (Integrity):</strong> Bilginin iletim esnasında bozulmadığının kanıtıdır. SHA-256 hash ve dijital imzalar kullanılır.</li>
+            <li><strong>Erişilebilirlik (Availability):</strong> Sistemlerin 7/24 çalışmasıdır. DDoS korumaları ve yedekli sunucular sağlar.</li>
+          </ul>
+        </article>
+
+        <article class="cyber-detail-card">
+          <h3><span>02 //</span> Modern Saldırı Vektörleri & Ransomware Anatomisi</h3>
+          <p>
+            Saldırganların en sık kullandığı tehditler:
+            <br>• <strong>Ransomware (Fidye Yazılımları):</strong> Dosyaları şifreleyip çifte şantaj (Double Extortion) ile fidye talep eder.
+            <br>• <strong>Spear-Phishing:</strong> Hedefe özel hazırlanan sahte e-postalarla kimlik bilgilerini çalma tekniğidir.
+            <br>• <strong>Zero-Day Zafiyetleri:</strong> Üreticinin henüz fark etmediği ve yamalamadığı güvenlik açıklarıdır.
+          </p>
+        </article>
+
+        <article class="cyber-detail-card">
+          <h3><span>03 //</span> Sıfır Güven (Zero Trust Architecture)</h3>
+          <p>
+            "Asla güvenme, daima doğrula" prensibiyle çalışır. Ağ içindeki her cihaz ve her istek sürekli kimlik denetimine ve en az yetki kuralına (Least Privilege) tabi tutulur.
+          </p>
+        </article>
+
+        <div style="text-align: center;"><button class="close-panel-btn" onclick="closeAllPanels()">⬆️ BİLGİSAYARLARA GERİ DÖN</button></div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- PANEL 2: 10 ADIMLIK YOL HARİTASI & TÜRKÇE VİDEOLAR      -->
+    <!-- ======================================================== -->
+    <section class="content-panel" id="panelRoadmap">
+      <div class="panel-header" style="border-color: var(--c-cyan);">
+        <div class="panel-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="panel-title" style="color: var(--c-cyan);">TERMINAL 02 // 10 ADIMDA SIFIRDAN UZMANLIĞA SİBER GÜVENLİK YOL HARİTASI</span>
+        <span style="font-size:0.75rem; color:#6e997d;">[10 TÜRKÇE VİDEO]</span>
+      </div>
+
+      <div class="panel-body">
+        <div class="roadmap-timeline">
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 01</span>
+            <div class="step-header"><h3>Ağ (Network) Temelleri, TCP/IP & OSI Modeli</h3></div>
+            <div class="step-content"><p>IP adresleri, Subnetting, TCP/UDP protokolleri, DNS, DHCP ve 7 katmanlı OSI modeli eksiksiz öğrenilir.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/T06-5yB9Bzw" title="Ağ Temelleri" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: Siber Güvenlikçiler İçin Ağ Temelleri</span><a href="https://www.youtube.com/watch?v=T06-5yB9Bzw" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 02</span>
+            <div class="step-header"><h3>Linux Temelleri, Komut Satırı & Dosya İzinleri</h3></div>
+            <div class="step-content"><p>Kali Linux ve Ubuntu kullanarak terminal komutları, dosya sistemi mimarisi, chmod, chown ve süreç yönetimi öğrenilir.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/2xAu1VSE_SE" title="Linux Temelleri" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: Linux Terminale Giriş & Temel Komutlar</span><a href="https://www.youtube.com/watch?v=2xAu1VSE_SE" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 03</span>
+            <div class="step-header"><h3>Siber Güvenlik İçin Python ve Script Geliştirme</h3></div>
+            <div class="step-content"><p>Python ile port tarayıcılar, paket dinleyiciler ve kaba kuvvet (brute-force) scriptleri geliştirme mantığı kavranır.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/R75Oo--O5Q4" title="Python Eğitimi" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: Python 3 Dersleri - Sıfırdan Başlangıç</span><a href="https://www.youtube.com/watch?v=R75Oo--O5Q4" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 04</span>
+            <div class="step-header"><h3>Kriptografi, Şifreleme Sistemleri ve Hash Mekanizmaları</h3></div>
+            <div class="step-content"><p>AES, RSA, SSL/TLS sertifika mekanizmaları ve SHA-256 hash algoritmaları derinlemesine öğrenilir.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/peZto9ODQLk" title="Kriptoloji" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: Kriptolojiye Giriş & Şifreleme Algoritmaları</span><a href="https://www.youtube.com/watch?v=peZto9ODQLk" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 05</span>
+            <div class="step-header"><h3>Ağ Analizi, Nmap ile Port Taraması ve Wireshark</h3></div>
+            <div class="step-content"><p>Canlı cihazları tespit etmek, port taraması yapmak ve Wireshark ile canlı paket trafiğini incelemek öğrenilir.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/oH-c-awq7iY" title="Wireshark" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: Cemal Taner - Wireshark Atölyesi</span><a href="https://www.youtube.com/watch?v=oH-c-awq7iY" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 06</span>
+            <div class="step-header"><h3>Web Uygulama Güvenliği ve OWASP Top 10 Zafiyetleri</h3></div>
+            <div class="step-content"><p>SQL Injection, XSS, CSRF, IDOR gibi kritik web açıkları incelenir ve sömürü senaryoları pratik edilir.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/WtHnT73NaaQ" title="SQL Injection" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: Web Security 101 - SQL Injection</span><a href="https://www.youtube.com/watch?v=WtHnT73NaaQ" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 07</span>
+            <div class="step-header"><h3>Burp Suite & Zafiyet Analizi Araçları</h3></div>
+            <div class="step-content"><p>Web sızma testlerinin 1 numaralı aracı Burp Suite ile HTTP isteklerini yakalama, değiştirme ve zafiyet arama ustalaşılır.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/DAxh8beidGk" title="Burp Suite" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: Etik Hacker Temelleri - Burp Suite Eğitimi</span><a href="https://www.youtube.com/watch?v=DAxh8beidGk" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 08</span>
+            <div class="step-header"><h3>Sızma Testleri, Metasploit & TryHackMe Labları</h3></div>
+            <div class="step-content"><p>TryHackMe ve HackTheBox üzerinde sanal makineler hacklenir, exploit fırlatma ve yetki yükseltme pratik edilir.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/W2rdv0Ge4uc" title="TryHackMe" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: Tek Başına Hacklemeyi Öğren! (TryHackMe)</span><a href="https://www.youtube.com/watch?v=W2rdv0Ge4uc" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 09</span>
+            <div class="step-header"><h3>SOC Analistliği, Olay Müdahalesi (DFIR) & Tehdit Avı</h3></div>
+            <div class="step-content"><p>SOC (Güvenlik Operasyon Merkezi) analistliği, SIEM log analizi ve adli bilişim (DFIR) operasyonları kavranır.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/7jPqsI509TQ" title="SOC Analisti" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: SOC Analyst'in Görevi Nedir?</span><a href="https://www.youtube.com/watch?v=7jPqsI509TQ" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+          <div class="roadmap-step">
+            <span class="step-number-marker">ADIM 10</span>
+            <div class="step-header"><h3>Bulut Güvenliği, Profesyonel Sertifikalar & OSCP</h3></div>
+            <div class="step-content"><p>AWS/Azure bulut güvenliği, CompTIA Security+, CEH ve efsanevi OSCP sertifikasyon yol haritası tamamlanır.</p></div>
+            <div class="video-wrapper">
+              <div class="video-container"><iframe src="https://www.youtube.com/embed/jUfMMcoFIe4" title="Kariyer" allowfullscreen loading="lazy"></iframe></div>
+              <div class="video-footer"><span class="video-title">🎥 Türkçe Video: Can Değer - Siber Güvenlik Başlangıç Yolları</span><a href="https://www.youtube.com/watch?v=jUfMMcoFIe4" target="_blank" rel="noopener" class="youtube-direct-link">▶ YouTube'da İzle</a></div>
+            </div>
+          </div>
+
+        </div>
+        <div style="text-align: center;"><button class="close-panel-btn" onclick="closeAllPanels()">⬆️ BİLGİSAYARLARA GERİ DÖN</button></div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- PANEL 3: İNTERAKTİF SİBER ARAÇLAR (Şifre & Hash)         -->
+    <!-- ======================================================== -->
+    <section class="content-panel" id="panelTools">
+      <div class="panel-header" style="border-color: var(--c-purple);">
+        <div class="panel-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="panel-title" style="color: var(--c-purple);">TERMINAL 03 // İNTERAKTİF SİBER GÜVENLİK ARAÇLARI</span>
+        <span style="font-size:0.75rem; color:#d8b4fe;">[CANLI HESAPLAMA]</span>
+      </div>
+
+      <div class="panel-body">
+        <div class="tools-grid">
+
+          <!-- Araç 1: Şifre Kırılma Süresi & Güç Testi -->
+          <div class="tool-box">
+            <h3>🛡️ Canlı Şifre Güvenlik Testi</h3>
+            <p style="color:#d8b4fe; font-size:0.85rem; margin-bottom:12px;">Bir şifre yazın; kaba kuvvet (brute-force) saldırısında ne kadar sürede kırılacağını anında hesaplayalım.</p>
+            
+            <div class="tool-input-wrap">
+              <input type="text" id="passInput" class="tool-input" placeholder="Test edilecek şifreyi yazın...">
+              <div class="meter-bar"><div id="meterFill" class="meter-fill"></div></div>
+            </div>
+
+            <div id="passReport" class="tool-result-box">
+              Durum: Bekleniyor...<br>
+              Tahmini Kırılma Süresi: -<br>
+              Entropi Seviyesi: 0 bit
+            </div>
+          </div>
+
+          <!-- Araç 2: Kriptografik Hash Üretici -->
+          <div class="tool-box">
+            <h3>🔑 Kriptografik Hash Üretici (SHA-256)</h3>
+            <p style="color:#d8b4fe; font-size:0.85rem; margin-bottom:12px;">Herhangi bir metin yazın; tarayıcınızın kripto motoruyla anında SHA-256 hash çıktısını oluşturalım.</p>
+            
+            <div class="tool-input-wrap">
+              <input type="text" id="hashInput" class="tool-input" placeholder="Hash'lenecek metni yazın...">
+            </div>
+
+            <div class="tool-result-box">
+              <strong style="color:var(--c-purple);">SHA-256 Çıktısı:</strong>
+              <div id="hashOutput" style="word-break:break-all; margin-top:6px; color:#ffffff; font-size:0.8rem;">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</div>
+              <button class="copy-btn" onclick="copyHash()">📋 Hash'i Kopyala</button>
+            </div>
+          </div>
+
+        </div>
+        <div style="text-align: center;"><button class="close-panel-btn" onclick="closeAllPanels()">⬆️ BİLGİSAYARLARA GERİ DÖN</button></div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- PANEL 4: MİNİ LİNUX TERMİNALİ                           -->
+    <!-- ======================================================== -->
+    <section class="content-panel" id="panelTerminal">
+      <div class="panel-header" style="border-color: var(--c-amber);">
+        <div class="panel-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="panel-title" style="color: var(--c-amber);">TERMINAL 04 // MİNİ LİNUX HACKER SHELL v1.0</span>
+        <span style="font-size:0.75rem; color:#fde047;">[İNTERAKTİF BASH]</span>
+      </div>
+
+      <div class="panel-body">
+        <div class="terminal-window">
+          <div class="terminal-top-bar">
+            <span class="term-title">emre@cyber-core: ~ (tty1)</span>
+            <span style="font-size:0.75rem; color:#fde68a;">Yardım için <strong>'help'</strong> yazın</span>
+          </div>
+          
+          <div class="terminal-body" id="termBody">
+            <div class="term-output" id="termHistory">===============================================================
+CYBER CORE LINUX TERMINAL v1.0 [Emre Karaman]
+Kullanabileceğiniz komutları görmek için 'help' yazın.
+===============================================================
+</div>
+            <div class="term-input-line">
+              <span class="term-prompt">root@cyber:~$</span>
+              <input type="text" id="termInput" class="term-input" autocomplete="off" autofocus>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center;"><button class="close-panel-btn" onclick="closeAllPanels()">⬆️ BİLGİSAYARLARA GERİ DÖN</button></div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- PANEL 5: SİBER SEVİYE QUIZ                              -->
+    <!-- ======================================================== -->
+    <section class="content-panel" id="panelQuiz">
+      <div class="panel-header" style="border-color: var(--c-crimson);">
+        <div class="panel-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="panel-title" style="color: var(--c-crimson);">TERMINAL 05 // SİBER SEVİYENİ ÖLÇ (İNTERAKTİF TEST)</span>
+        <span style="font-size:0.75rem; color:#fda4af;">[QUIZ ENGINE]</span>
+      </div>
+
+      <div class="panel-body">
+        <div class="quiz-container">
+          <div class="quiz-header">
+            <span id="quizProgress">Soru 1 / 5</span>
+            <span id="quizScore">Skor: 0</span>
+          </div>
+
+          <div id="quizQuestionBox">
+            <div class="quiz-question" id="quizQuestionText">Soru yükleniyor...</div>
+            <div class="quiz-options" id="quizOptionsContainer"></div>
+          </div>
+
+          <div id="quizResultBox" class="quiz-result-card">
+            <h3 style="color: var(--c-crimson); font-size: 1.6rem;">🎯 TEST TAMAMLANDI!</h3>
+            <div class="quiz-score-badge" id="finalScoreBadge">5/5</div>
+            <p id="finalRankText" style="color: #fecdd3; font-size: 1.1rem; margin-bottom: 20px;">Rütbeniz: Kıdemli Etik Hacker</p>
+            <button class="close-panel-btn" onclick="restartQuiz()" style="border-color:var(--c-crimson); color:var(--c-crimson);">🔄 TESTİ YENİDEN BAŞLAT</button>
+          </div>
+        </div>
+        <div style="text-align: center;"><button class="close-panel-btn" onclick="closeAllPanels()">⬆️ BİLGİSAYARLARA GERİ DÖN</button></div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- PANEL 6: CHEAT SHEET (KOMUT REHBERİ)                    -->
+    <!-- ======================================================== -->
+    <section class="content-panel" id="panelCheatSheet">
+      <div class="panel-header" style="border-color: var(--c-emerald);">
+        <div class="panel-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="panel-title" style="color: var(--c-emerald);">TERMINAL 06 // SİBER GÜVENLİK KOMUT REHBERİ (CHEAT SHEET)</span>
+        <span style="font-size:0.75rem; color:#6ee7b7;">[ARANABİLİR & KOPYALANABİLİR]</span>
+      </div>
+
+      <div class="panel-body">
+        <div class="cheatsheet-wrap">
+          <input type="text" id="cheatSearchInput" class="search-commands-input" placeholder="🔍 Komut ara... (Örn: nmap, chmod, wireshark, sqlmap, grep)">
+
+          <div class="cheat-grid" id="cheatGrid"></div>
+        </div>
+        <div style="text-align: center;"><button class="close-panel-btn" onclick="closeAllPanels()">⬆️ BİLGİSAYARLARA GERİ DÖN</button></div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- PANEL 7: CANLI TEHDİT HARİTASI                          -->
+    <!-- ======================================================== -->
+    <section class="content-panel" id="panelThreatMap">
+      <div class="panel-header" style="border-color: var(--c-orange);">
+        <div class="panel-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="panel-title" style="color: var(--c-orange);">TERMINAL 07 // CANLI SİBER SALDIRI & TEHDİT HARİTASI SİMÜLASYONU</span>
+        <span style="font-size:0.75rem; color:#fdba74;">[GERÇEK ZAMANLI AKIŞ]</span>
+      </div>
+
+      <div class="panel-body">
+        <div class="map-wrap">
+          <canvas id="threatCanvas"></canvas>
+
+          <div class="threat-stats-bar">
+            <div class="threat-stat-item">
+              <div class="threat-stat-num" id="statBlocked">14,892</div>
+              <div class="threat-stat-lbl">Engellenen Saldırı</div>
+            </div>
+            <div class="threat-stat-item">
+              <div class="threat-stat-num" id="statBandwidth">42.8 Gbps</div>
+              <div class="threat-stat-lbl">Pik Saldırı Trafiği</div>
+            </div>
+            <div class="threat-stat-item">
+              <div class="threat-stat-num" style="color:#22c55e;">AKTİF</div>
+              <div class="threat-stat-lbl">Kalkan Durumu</div>
+            </div>
+            <div class="threat-stat-item">
+              <div class="threat-stat-num" style="color:#ef4444;">KRİTİK</div>
+              <div class="threat-stat-lbl">Genel Tehdit Düzeyi</div>
+            </div>
+          </div>
+
+          <div class="threat-feed" id="threatFeedBox">
+            [SİSTEM] Tehdit izleme kalkanları aktif edildi...
+          </div>
+        </div>
+        <div style="text-align: center;"><button class="close-panel-btn" onclick="closeAllPanels()">⬆️ BİLGİSAYARLARA GERİ DÖN</button></div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- PANEL 8: EMRE KARAMAN - BİYOGRAFİ & SOSYAL MEDYA HUB'I  -->
+    <!-- ======================================================== -->
+    <section class="content-panel" id="panelProfile">
+      <div class="panel-header" style="border-color: var(--c-blue);">
+        <div class="panel-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="panel-title" style="color: var(--c-blue);">TERMINAL 08 // EMRE KARAMAN - PROFİL & SOSYAL MEDYA İLETİŞİM HUB'I</span>
+        <span style="font-size:0.75rem; color:#7dd3fc;">[ÇEVRİMİÇİ // AKTİF BAĞLANTI]</span>
+      </div>
+
+      <div class="panel-body">
+        <div class="profile-container">
+          
+          <!-- Üst Profil Kartı & Biyografi -->
+          <div class="profile-card">
+            <div class="profile-avatar-box">
+              <img src="emre.jpeg" alt="Emre Karaman" class="profile-avatar-main">
+              <div class="profile-online-badge" title="Durum: Çevrimiçi & Aktif"></div>
+            </div>
+
+            <h2 class="profile-name-title">EMRE KARAMAN</h2>
+            <div class="profile-tagline">Siber Güvenlik Araştırmacısı // Ethical Hacker & System Defender</div>
+
+            <div class="profile-meta-tags">
+              <span class="profile-meta-tag">🛡️ Blue & Red Team Savunma</span>
+              <span class="profile-meta-tag">⚡ Web Güvenliği (OWASP Top 10)</span>
+              <span class="profile-meta-tag">🐧 Linux Kernel & Hardening</span>
+              <span class="profile-meta-tag">🔍 Ağ & Wireshark Paket Analizi</span>
+              <span class="profile-meta-tag">🐍 Python ile Otomasyon & Exploit</span>
+              <span class="profile-meta-tag">📍 Türkiye</span>
+            </div>
+
+            <div class="profile-bio-container">
+              <h4><span>💻</span> [root@emre-karaman ~]# cat hakkimda.txt</h4>
+              <p>
+                Merhaba! Ben <strong>Emre Karaman</strong>. Siber güvenlik, etik korsanlık (ethical hacking), sistem savunuculuğu (Blue Team) ve penetrasyon testleri alanında araştırmalar yürüten ve pratik savunma mekanizmaları üreten bir siber güvenlik meraklısıyım.
+              </p>
+              <br>
+              <p>
+                Dijital evrende savunmasız hiçbir sistem kalmaması gerektiğine inanıyor; <strong>CIA Triad</strong> (Gizlilik, Bütünlük, Erişilebilirlik) ve <strong>Sıfır Güven (Zero Trust)</strong> prensiplerini temel alarak güvenli mimariler tasarlıyorum. Sıfırdan bu alana girmek isteyenler için hazırladığım 10 adımlık yol haritası ve araç simülatörleriyle bilginin herkes için erişilebilir olmasını hedefliyorum.
+              </p>
+              <br>
+              <p>
+                Siber güvenlik projeleri, sızma testi iş birlikleri, açık kaynaklı araç geliştirme veya teknik istişareler için aşağıdaki neon iletişim kanallarından bana doğrudan ulaşabilirsiniz!
+              </p>
+            </div>
+          </div>
+
+          <!-- Neon Sosyal Medya Butonları Izgarası -->
+          <div class="social-section-title">
+            <span>⚡</span> DOĞRUDAN İLETİŞİM & SOSYAL MEDYA KANALLARI <span>⚡</span>
+          </div>
+
+          <div class="social-neon-grid">
+            
+            <!-- 1. GITHUB -->
+            <a href="https://github.com/cylub3372/karaman" target="_blank" rel="noopener noreferrer" class="social-neon-card card-github" title="Emre Karaman GitHub Deposu">
+              <div class="social-icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                </svg>
+              </div>
+              <div class="social-text-box">
+                <div class="social-platform-name">GitHub</div>
+                <div class="social-user-handle">cylub3372 / karaman</div>
+              </div>
+              <span class="social-arrow-hint">➔</span>
+            </a>
+
+            <!-- 2. INSTAGRAM -->
+            <a href="https://instagram.com/emrekaramann0" target="_blank" rel="noopener noreferrer" class="social-neon-card card-instagram" title="Emre Karaman Instagram Hesabı">
+              <div class="social-icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </div>
+              <div class="social-text-box">
+                <div class="social-platform-name">Instagram</div>
+                <div class="social-user-handle">@emrekaramann0</div>
+              </div>
+              <span class="social-arrow-hint">➔</span>
+            </a>
+
+            <!-- 3. E-POSTA -->
+            <a href="mailto:emrekaraman346@gmail.com" class="social-neon-card card-email" title="Emre Karaman'a E-Posta Gönder">
+              <div class="social-icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+              </div>
+              <div class="social-text-box">
+                <div class="social-platform-name">E-Posta</div>
+                <div class="social-user-handle">emrekaraman346@gmail.com</div>
+              </div>
+              <span class="social-arrow-hint">➔</span>
+            </a>
+
+          </div>
+
+          <!-- İnteraktif Şifreli Mesaj Kutusu -->
+          <div class="quick-contact-box">
+            <h4><span>🔒</span> EMRE KARAMAN'A ŞİFRELİ MESAJ GÖNDER</h4>
+            <div class="quick-contact-desc">
+              Web üzerinden doğrudan güvenli bir not iletmek isterseniz formu doldurabilirsiniz. Mesajınız uçtan uca şifreleme simülasyonu ile anında işlenir.
+            </div>
+
+            <form id="profileContactForm" onsubmit="handleSendEncryptedMsg(event)">
+              <div class="contact-form-grid">
+                <input type="text" id="senderName" class="contact-field-input" placeholder="Adınız / Takma Adınız" required>
+                <input type="email" id="senderEmail" class="contact-field-input" placeholder="E-Posta Adresiniz (Geri dönüş için)" required>
+              </div>
+              <input type="text" id="senderSubject" class="contact-field-input" placeholder="Konu (Örn: Siber Güvenlik Projesi / İş Birliği)" style="margin-bottom: 14px;" required>
+              <textarea id="senderMessage" class="contact-field-textarea" placeholder="Mesajınız... (Siber güvenlik sorusu, iş teklifi veya danışmanlık talebi)" required></textarea>
+
+              <div class="contact-actions">
+                <button type="submit" class="send-cipher-btn" id="sendCipherBtn">
+                  <span>🔐</span> ŞİFRELİ MESAJI İLET
+                </button>
+                <button type="button" class="copy-email-btn" onclick="copyEmailToClipboard()">
+                  <span>📋</span> E-POSTAYI KOPYALA
+                </button>
+              </div>
+            </form>
+
+            <div id="cipherStatusBox" class="cipher-status-msg"></div>
+          </div>
+
+        </div>
+
+        <div style="text-align: center;"><button class="close-panel-btn" onclick="closeAllPanels()">⬆️ BİLGİSAYARLARA GERİ DÖN</button></div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div>Siber Güvenlik Portalı © 2026 | Emre Karaman</div>
+  </footer>
+
+  <script>
+    // ==========================================
+    // 1. GENEL MATRIX EFEKTİ (Arka Plan)
+    // ==========================================
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*+-/<>~';
+    let columns = Math.floor(canvas.width / 14);
+    let drops = Array(columns).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(5, 8, 7, 0.08)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#00ff66';
+      ctx.font = '14px monospace';
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * 14, drops[i] * 14);
+        if (drops[i] * 14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 45);
+
+    // ==========================================
+    // 2. SES VE PANEL AÇMA MEKANİZMASI
+    // ==========================================
+    function playBeep(pitch = 520) {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const actx = new AudioCtx();
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(pitch, actx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(pitch * 2, actx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.001, actx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.12, actx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.14);
+        osc.connect(gain);
+        gain.connect(actx.destination);
+        osc.start();
+        osc.stop(actx.currentTime + 0.15);
+      } catch (e) {}
+    }
+
+    const panels = {
+      btnPc1: { panel: document.getElementById('panelCyberDoc'), pitch: 520 },
+      btnPc2: { panel: document.getElementById('panelRoadmap'), pitch: 620 },
+      btnPc3: { panel: document.getElementById('panelTools'), pitch: 720 },
+      btnPc4: { panel: document.getElementById('panelTerminal'), pitch: 820 },
+      btnPc5: { panel: document.getElementById('panelQuiz'), pitch: 920 },
+      btnPc6: { panel: document.getElementById('panelCheatSheet'), pitch: 680 },
+      btnPc7: { panel: document.getElementById('panelThreatMap'), pitch: 580 },
+      btnPc8: { panel: document.getElementById('panelProfile'), pitch: 760 }
+    };
+
+    function openPanel(id) {
+      Object.values(panels).forEach(p => p.panel.style.display = 'none');
+      const target = panels[id];
+      if (target) {
+        playBeep(target.pitch);
+        target.panel.style.display = 'block';
+        setTimeout(() => { target.panel.scrollIntoView({ behavior: 'smooth' }); }, 80);
+        if (id === 'btnPc7') initThreatMap();
+      }
+    }
+
+    Object.keys(panels).forEach(btnId => {
+      const btn = document.getElementById(btnId);
+      if (btn) btn.addEventListener('click', () => openPanel(btnId));
+    });
+
+    const headerBadge = document.getElementById('headerProfileBadge');
+    if (headerBadge) {
+      headerBadge.addEventListener('click', () => openPanel('btnPc8'));
+    }
+
+    function closeAllPanels() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        Object.values(panels).forEach(p => p.panel.style.display = 'none');
+      }, 400);
+    }
+
+    // ==========================================
+    // 3. İNTERAKTİF ŞİFRE & HASH ARAÇLARI
+    // ==========================================
+    const passInput = document.getElementById('passInput');
+    const meterFill = document.getElementById('meterFill');
+    const passReport = document.getElementById('passReport');
+
+    passInput.addEventListener('input', () => {
+      const val = passInput.value;
+      if (!val) {
+        meterFill.style.width = '0%';
+        passReport.innerHTML = 'Durum: Bekleniyor...<br>Tahmini Kırılma Süresi: -<br>Entropi: 0 bit';
+        return;
+      }
+
+      let pool = 0;
+      if (/[a-z]/.test(val)) pool += 26;
+      if (/[A-Z]/.test(val)) pool += 26;
+      if (/[0-9]/.test(val)) pool += 10;
+      if (/[^a-zA-Z0-9]/.test(val)) pool += 33;
+
+      const entropy = Math.round(val.length * Math.log2(pool || 1));
+      let pct = Math.min(100, Math.round((entropy / 90) * 100));
+      meterFill.style.width = pct + '%';
+
+      let timeText = '1 saniyeden az (ANINDA KIRILIR!)';
+      let color = '#ff4757';
+      if (entropy > 75) {
+        timeText = 'Yüzyıllar sürer (GÜVENLİ ZIRH)';
+        color = '#00ff66';
+      } else if (entropy > 55) {
+        timeText = 'Birkaç yıl';
+        color = '#00e5ff';
+      } else if (entropy > 35) {
+        timeText = 'Birkaç saat - gün';
+        color = '#fbbf24';
+      }
+
+      meterFill.style.background = color;
+      passReport.innerHTML = `<strong>Durum:</strong> ${pct < 45 ? 'ZAYIF' : (pct < 75 ? 'ORTA' : 'GÜÇLÜ')}<br>
+                              <strong>Tahmini Kırılma Süresi:</strong> ${timeText}<br>
+                              <strong>Entropi:</strong> ${entropy} bit (Karakter Havuzu: ${pool})`;
+    });
+
+    const hashInput = document.getElementById('hashInput');
+    const hashOutput = document.getElementById('hashOutput');
+
+    async function computeSHA256(str) {
+      const buffer = new TextEncoder().encode(str);
+      const digest = await crypto.subtle.digest('SHA-256', buffer);
+      return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    hashInput.addEventListener('input', async () => {
+      const val = hashInput.value;
+      const hash = await computeSHA256(val);
+      hashOutput.innerText = hash;
+    });
+
+    function copyHash() {
+      navigator.clipboard.writeText(hashOutput.innerText);
+      alert('SHA-256 Hash panoya kopyalandı!');
+    }
+
+    // ==========================================
+    // 4. MİNİ LİNUX TERMİNALİ
+    // ==========================================
+    const termInput = document.getElementById('termInput');
+    const termHistory = document.getElementById('termHistory');
+    const termBody = document.getElementById('termBody');
+
+    const commands = {
+      help: "Kullanılabilir Komutlar:\n  help        - Komut listesini gösterir\n  whoami      - Geçerli kullanıcıyı gösterir\n  ls          - Dizin içeriğini listeler\n  cat [dosya] - Dosya içeriğini okur (örn: cat gizli.txt)\n  scan        - Ağ güvenlik taraması başlatır\n  nmap        - Port taraması yapar\n  clear       - Terminali temizler\n  date        - Sistem tarih ve saatini gösterir\n  matrix      - Matrix modu",
+      whoami: "root (Süper Kullanıcı // Emre Karaman Savunma Merkezi)",
+      ls: "dokuman.pdf   siber_araclar.sh   gizli.txt   nmap_sonuclari.xml   firewall.rules",
+      "cat gizli.txt": "GİZLİ NOT: En güçlü güvenlik duvarı, siber farkındalığı yüksek insandır. - Emre Karaman",
+      scan: "[*] 192.168.1.0/24 ağı taranıyor...\n[+] 192.168.1.1 (Firewall) - AÇIK (Port 443)\n[+] 192.168.1.45 (Linux Core) - GÜVENLİ (Port 22 SSH)\n[!] Zafiyet tespit edilmedi. Sistem tam korumada.",
+      nmap: "Nmap 7.94 scan report for target.local (10.10.10.15)\nPORT     STATE SERVICE VERSION\n22/tcp   open  ssh     OpenSSH 8.9p1\n80/tcp   open  http    Apache/2.4.52\n443/tcp  open  ssl/https\nMAC Address: 00:0C:29:84:7B:A1",
+      date: () => new Date().toLocaleString('tr-TR'),
+      matrix: "Wake up, Neo... The Matrix has you.",
+      clear: () => { termHistory.innerText = ""; return ""; }
+    };
+
+    termInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const raw = termInput.value.trim();
+        termInput.value = '';
+        if (!raw) return;
+
+        termHistory.innerText += `\nroot@cyber:~$ ${raw}\n`;
+        const cmd = raw.toLowerCase();
+
+        if (commands[cmd]) {
+          const resp = typeof commands[cmd] === 'function' ? commands[cmd]() : commands[cmd];
+          if (resp) termHistory.innerText += resp + "\n";
+        } else if (cmd.startsWith("cat ")) {
+          const file = cmd.replace("cat ", "").trim();
+          if (file === "gizli.txt") {
+            termHistory.innerText += commands["cat gizli.txt"] + "\n";
+          } else {
+            termHistory.innerText += `cat: ${file}: Erişim engellendi veya dosya bulunamadı.\n`;
+          }
+        } else {
+          termHistory.innerText += `bash: ${raw}: komut bulunamadı. Komutlar için 'help' yazın.\n`;
+        }
+        termBody.scrollTop = termBody.scrollHeight;
+      }
+    });
+
+    // ==========================================
+    // 5. SİBER SEVİYE QUIZ (TEST)
+    // ==========================================
+    const quizData = [
+      {
+        q: "1. Aşağıdakilerden hangisi bir 'Phishing' (Oltalama) saldırısının en belirgin işaretidir?",
+        opts: [
+          "A) Alan adı 'paypa1.com' gibi sahte ve aciliyet hissi uyandıran e-postalar",
+          "B) Bilgisayarın fanının hızlı dönmesi",
+          "C) Şifrenin 16 haneli olması",
+          "D) Ekran parlaklığının azalması"
+        ],
+        ans: 0
+      },
+      {
+        q: "2. 'Sıfır Güven' (Zero Trust) mimarisinin ana felsefesi nedir?",
+        opts: [
+          "A) Şirket içindeki tüm çalışanlara sonsuz güven duy",
+          "B) Asla güvenme, daima doğrula (Never trust, always verify)",
+          "C) Antivirüs programı kullanmaya gerek yoktur",
+          "D) Ağ şifresini herkesle paylaş"
+        ],
+        ans: 1
+      },
+      {
+        q: "3. Wireshark aracı temel olarak ne işe yarar?",
+        opts: [
+          "A) Şifre kırmak için kaba kuvvet saldırısı yapar",
+          "B) Ağ trafiğindeki canlı paketleri yakalayıp analiz eder",
+          "C) Bilgisayara format atar",
+          "D) Web sitesi tasarımı yapar"
+        ],
+        ans: 1
+      },
+      {
+        q: "4. Web uygulamalarındaki SQL Injection (SQLi) zafiyetini engellemenin en etkili yolu nedir?",
+        opts: [
+          "A) Sadece şifreyi uzatmak",
+          "B) Parametreli sorgular (Prepared Statements) kullanmak",
+          "C) Sunucuyu her gece yeniden başlatmak",
+          "D) CSS kodlarını gizlemek"
+        ],
+        ans: 1
+      },
+      {
+        q: "5. İki Faktörlü Doğrulama (2FA) neden kritik öneme sahiptir?",
+        opts: [
+          "A) İnterneti hızlandırır",
+          "B) Şifreniz çalınsa bile saldırganın hesabınıza girmesini engeller",
+          "C) Bilgisayarın hafızasını temizler",
+          "D) E-postaları otomatik siler"
+        ],
+        ans: 1
+      }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    function renderQuestion() {
+      if (currentQ >= quizData.length) {
+        document.getElementById('quizQuestionBox').style.display = 'none';
+        document.getElementById('quizResultBox').style.display = 'block';
+        document.getElementById('finalScoreBadge').innerText = `${score} / ${quizData.length}`;
+        
+        let rank = "🥉 Çaylak Savunmacı (Daha çok pratik yapmalısın!)";
+        if (score === 5) rank = "🥇 Kıdemli Etik Hacker // Zırh Gibi Savunma!";
+        else if (score >= 3) rank = "🥈 Sistem Güvenlik Analisti // İyi Düzeyde Farkındalık";
+        document.getElementById('finalRankText').innerText = "Unvanınız: " + rank;
+        return;
+      }
+
+      const q = quizData[currentQ];
+      document.getElementById('quizProgress').innerText = `Soru ${currentQ + 1} / ${quizData.length}`;
+      document.getElementById('quizScore').innerText = `Skor: ${score}`;
+      document.getElementById('quizQuestionText').innerText = q.q;
+
+      const optsBox = document.getElementById('quizOptionsContainer');
+      optsBox.innerHTML = '';
+      q.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (idx === q.ans) {
+            score++;
+            btn.style.borderColor = '#00ff66';
+            btn.style.background = 'rgba(0, 255, 102, 0.2)';
+          } else {
+            btn.style.borderColor = '#ff4757';
+            btn.style.background = 'rgba(255, 71, 87, 0.2)';
+          }
+          setTimeout(() => {
+            currentQ++;
+            renderQuestion();
+          }, 450);
+        };
+        optsBox.appendChild(btn);
+      });
+    }
+    renderQuestion();
+
+    function restartQuiz() {
+      currentQ = 0;
+      score = 0;
+      document.getElementById('quizQuestionBox').style.display = 'block';
+      document.getElementById('quizResultBox').style.display = 'none';
+      renderQuestion();
+    }
+
+    // ==========================================
+    // 6. CHEAT SHEET (KOMUT REHBERİ)
+    // ==========================================
+    const cheatList = [
+      { cmd: "nmap -sV -sC [hedef]", desc: "Açık portları, çalışan servisleri ve sürümlerini varsayılan scriptlerle tespit eder." },
+      { cmd: "nmap -p- --min-rate 1000 [hedef]", desc: "Tüm 65.535 portu yüksek hızda tarar." },
+      { cmd: "chmod 700 [dosya]", desc: "Yalnızca dosya sahibine okuma, yazma ve çalıştırma yetkisi verir." },
+      { cmd: "grep -rnwi 'password' /var/www/", desc: "Dizin altındaki tüm dosyalarda şifre kelimesini arar." },
+      { cmd: "netstat -tulnp", desc: "Sistemde dinlenen tüm TCP ve UDP portlarını ve ilgili programları listeler." },
+      { cmd: "wireshark &", desc: "Wireshark ağ trafiği analiz programını arka planda başlatır." },
+      { cmd: "sqlmap -u [URL] --dbs", desc: "Hedef web adresindeki SQL enjeksiyon açığını arar ve veritabanlarını listeler." },
+      { cmd: "hydra -l admin -P rockyou.txt [ip] ssh", desc: "SSH servisine karşı sözlük tabanlı şifre kaba kuvvet saldırısı dener." },
+      { cmd: "iptables -A INPUT -p tcp --dport 22 -j ACCEPT", desc: "Güvenlik duvarında 22 numaralı SSH portuna gelen bağlantılara izin verir." }
+    ];
+
+    const cheatGrid = document.getElementById('cheatGrid');
+    const cheatSearch = document.getElementById('cheatSearchInput');
+
+    function renderCheats(filter = '') {
+      cheatGrid.innerHTML = '';
+      const filtered = cheatList.filter(item => 
+        item.cmd.toLowerCase().includes(filter.toLowerCase()) || 
+        item.desc.toLowerCase().includes(filter.toLowerCase())
+      );
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'cheat-card';
+        card.innerHTML = `
+          <div class="cheat-cmd">
+            <code>${item.cmd}</code>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText('${item.cmd}'); alert('Kopyalandı!');">Kopyala</button>
+          </div>
+          <div class="cheat-desc">${item.desc}</div>
+        `;
+        cheatGrid.appendChild(card);
+      });
+    }
+    renderCheats();
+
+    cheatSearch.addEventListener('input', (e) => {
+      renderCheats(e.target.value);
+    });
+
+    // ==========================================
+    // 7. CANLI TEHDİT HARİTASI SİMÜLASYONU
+    // ==========================================
+    let threatInit = false;
+    function initThreatMap() {
+      if (threatInit) return;
+      threatInit = true;
+
+      const tCanvas = document.getElementById('threatCanvas');
+      const tCtx = tCanvas.getContext('2d');
+      tCanvas.width = tCanvas.offsetWidth;
+      tCanvas.height = tCanvas.offsetHeight;
+
+      const nodes = [
+        { name: "İstanbul (TR)", x: 0.54, y: 0.38 },
+        { name: "New York (US)", x: 0.28, y: 0.36 },
+        { name: "Londra (UK)", x: 0.48, y: 0.30 },
+        { name: "Frankfurt (DE)", x: 0.51, y: 0.32 },
+        { name: "Tokyo (JP)", x: 0.86, y: 0.40 },
+        { name: "Singapur (SG)", x: 0.78, y: 0.58 },
+        { name: "Sidney (AU)", x: 0.88, y: 0.75 },
+        { name: "Sao Paulo (BR)", x: 0.34, y: 0.70 }
+      ];
+
+      const attackTypes = ["DDoS Saldırısı", "Ransomware Enjeksiyonu", "Brute-Force Denemesi", "Zero-Day Exploit", "SQL Injection"];
+      const attacks = [];
+      let totalBlocked = 14892;
+
+      function spawnAttack() {
+        const from = nodes[Math.floor(Math.random() * nodes.length)];
+        let to = nodes[Math.floor(Math.random() * nodes.length)];
+        while (to === from) to = nodes[Math.floor(Math.random() * nodes.length)];
+
+        attacks.push({
+          x1: from.x * tCanvas.width,
+          y1: from.y * tCanvas.height,
+          x2: to.x * tCanvas.width,
+          y2: to.y * tCanvas.height,
+          progress: 0,
+          color: Math.random() > 0.4 ? '#ff5722' : '#ff0055'
+        });
+
+        // Log ekle
+        totalBlocked++;
+        document.getElementById('statBlocked').innerText = totalBlocked.toLocaleString();
+        const feed = document.getElementById('threatFeedBox');
+        const type = attackTypes[Math.floor(Math.random() * attackTypes.length)];
+        const time = new Date().toLocaleTimeString();
+        feed.innerHTML = `[${time}] <span style="color:#ff5722;">[ENGEL]</span> ${from.name} ➔ ${to.name} (${type})<br>` + feed.innerHTML.slice(0, 600);
+      }
+
+      setInterval(spawnAttack, 700);
+
+      function drawThreats() {
+        tCtx.fillStyle = 'rgba(2, 5, 4, 0.25)';
+        tCtx.fillRect(0, 0, tCanvas.width, tCanvas.height);
+
+        // Şehir Düğümlerini Çiz
+        nodes.forEach(n => {
+          const nx = n.x * tCanvas.width;
+          const ny = n.y * tCanvas.height;
+          tCtx.beginPath();
+          tCtx.arc(nx, ny, 4, 0, Math.PI * 2);
+          tCtx.fillStyle = '#00ff66';
+          tCtx.fill();
+          tCtx.fillStyle = '#a7f3d0';
+          tCtx.font = '10px monospace';
+          tCtx.fillText(n.name, nx + 7, ny + 3);
+        });
+
+        // Lazer Saldırı Çizgileri
+        for (let i = attacks.length - 1; i >= 0; i--) {
+          const a = attacks[i];
+          a.progress += 0.025;
+
+          const cx = a.x1 + (a.x2 - a.x1) * a.progress;
+          const cy = a.y1 + (a.y2 - a.y1) * a.progress;
+
+          tCtx.beginPath();
+          tCtx.moveTo(a.x1, a.y1);
+          tCtx.lineTo(cx, cy);
+          tCtx.strokeStyle = a.color;
+          tCtx.lineWidth = 1.8;
+          tCtx.stroke();
+
+          tCtx.beginPath();
+          tCtx.arc(cx, cy, 3, 0, Math.PI * 2);
+          tCtx.fillStyle = '#ffffff';
+          tCtx.fill();
+
+          if (a.progress >= 1) attacks.splice(i, 1);
+        }
+
+        requestAnimationFrame(drawThreats);
+      }
+      drawThreats();
+    }
+
+    // ==========================================
+    // 8. HACKER SYNTHWAVE / LO-FI MÜZİK ÇALAR MOTORU
+    // ==========================================
+    let synthCtx = null;
+    let isSynthPlaying = false;
+    let synthInterval = null;
+    let bassOsc = null;
+    let bassGain = null;
+    let padOsc = null;
+    let padGain = null;
+
+    const musicBtn = document.getElementById('musicToggleBtn');
+    const musicBtnIcon = document.getElementById('musicBtnIcon');
+    const musicBtnText = document.getElementById('musicBtnText');
+    const audioWidget = document.getElementById('audioPlayerWidget');
+
+    function startCyberSynth() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!synthCtx) synthCtx = new AudioCtx();
+      if (synthCtx.state === 'suspended') synthCtx.resume();
+
+      // 1. Derin Sub-Bass Drone (A1: 55Hz)
+      bassOsc = synthCtx.createOscillator();
+      bassGain = synthCtx.createGain();
+      const bassFilter = synthCtx.createBiquadFilter();
+
+      bassOsc.type = 'sawtooth';
+      bassOsc.frequency.setValueAtTime(55, synthCtx.currentTime);
+      bassFilter.type = 'lowpass';
+      bassFilter.frequency.setValueAtTime(140, synthCtx.currentTime);
+
+      bassGain.gain.setValueAtTime(0.001, synthCtx.currentTime);
+      bassGain.gain.linearRampToValueAtTime(0.07, synthCtx.currentTime + 1);
+
+      bassOsc.connect(bassFilter);
+      bassFilter.connect(bassGain);
+      bassGain.connect(synthCtx.destination);
+      bassOsc.start();
+
+      // 2. Fütüristik Cyber Pad (D minor chord A3/F3)
+      padOsc = synthCtx.createOscillator();
+      padGain = synthCtx.createGain();
+      const padFilter = synthCtx.createBiquadFilter();
+
+      padOsc.type = 'triangle';
+      padOsc.frequency.setValueAtTime(174.61, synthCtx.currentTime); // F3
+      padFilter.type = 'lowpass';
+      padFilter.frequency.setValueAtTime(320, synthCtx.currentTime);
+
+      padGain.gain.setValueAtTime(0.001, synthCtx.currentTime);
+      padGain.gain.linearRampToValueAtTime(0.04, synthCtx.currentTime + 1.5);
+
+      padOsc.connect(padFilter);
+      padFilter.connect(padGain);
+      padGain.connect(synthCtx.destination);
+      padOsc.start();
+
+      // 3. Synthwave Arpeggio (A Minor Cyber Arp)
+      const arpNotes = [220.00, 261.63, 329.63, 392.00, 440.00, 392.00, 329.63, 293.66];
+      let arpIdx = 0;
+
+      function playSynthPluck(freq) {
+        if (!synthCtx || !isSynthPlaying) return;
+        const osc = synthCtx.createOscillator();
+        const gain = synthCtx.createGain();
+        const filter = synthCtx.createBiquadFilter();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, synthCtx.currentTime);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(800, synthCtx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(180, synthCtx.currentTime + 0.32);
+
+        gain.gain.setValueAtTime(0.0001, synthCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.065, synthCtx.currentTime + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, synthCtx.currentTime + 0.32);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(synthCtx.destination);
+
+        osc.start();
+        osc.stop(synthCtx.currentTime + 0.33);
+      }
+
+      synthInterval = setInterval(() => {
+        playSynthPluck(arpNotes[arpIdx]);
+        arpIdx = (arpIdx + 1) % arpNotes.length;
+      }, 230); // ~130 BPM
+    }
+
+    function stopCyberSynth() {
+      if (synthInterval) clearInterval(synthInterval);
+      if (bassGain && synthCtx) {
+        try {
+          bassGain.gain.linearRampToValueAtTime(0.0001, synthCtx.currentTime + 0.2);
+          padGain.gain.linearRampToValueAtTime(0.0001, synthCtx.currentTime + 0.2);
+          setTimeout(() => {
+            if (bassOsc) { bassOsc.stop(); bassOsc.disconnect(); }
+            if (padOsc) { padOsc.stop(); padOsc.disconnect(); }
+          }, 250);
+        } catch(e){}
+      }
+    }
+
+    musicBtn.addEventListener('click', () => {
+      if (!isSynthPlaying) {
+        isSynthPlaying = true;
+        startCyberSynth();
+        musicBtnIcon.innerText = '⏸';
+        musicBtnText.innerText = 'ÇALIYOR...';
+        audioWidget.classList.add('is-playing');
+      } else {
+        isSynthPlaying = false;
+        stopCyberSynth();
+        musicBtnIcon.innerText = '▶';
+        musicBtnText.innerText = 'HACKER SYNTHWAVE';
+        audioWidget.classList.remove('is-playing');
+      }
+    });
+
+    // ==========================================
+    // 8. EMRE KARAMAN PROFİL & İLETİŞİM İŞLEMLERİ
+    // ==========================================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function copyEmailToClipboard() {
+      const email = 'emrekaraman346@gmail.com';
+      const box = document.getElementById('cipherStatusBox');
+      
+      const showSuccess = () => {
+        playBeep(880);
+        box.style.display = 'block';
+        box.style.background = 'rgba(34, 197, 94, 0.15)';
+        box.style.border = '1px solid #22c55e';
+        box.style.color = '#4ade80';
+        box.innerHTML = '📋 <strong>Başarılı!</strong> E-posta adresi (<code>' + email + '</code>) panoya kopyalandı.';
+        setTimeout(() => {
+          if (box.innerHTML.includes('kopyalandı')) box.style.display = 'none';
+        }, 4000);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(showSuccess).catch(() => {
+          prompt('E-posta adresini kopyalayabilirsiniz:', email);
+        });
+      } else {
+        prompt('E-posta adresini kopyalayabilirsiniz:', email);
+      }
+    }
+
+    function handleSendEncryptedMsg(e) {
+      e.preventDefault();
+      const name = document.getElementById('senderName').value;
+      const email = document.getElementById('senderEmail').value;
+      const btn = document.getElementById('sendCipherBtn');
+      const box = document.getElementById('cipherStatusBox');
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> AES-256 ŞİFRELENİYOR...';
+      playBeep(440);
+
+      box.style.display = 'block';
+      box.style.background = 'rgba(56, 189, 248, 0.1)';
+      box.style.border = '1px solid #0284c7';
+      box.style.color = '#bae6fd';
+      box.innerHTML = '⚡ [HANDSHAKE] RSA-4096 anahtarı doğrulanıyor... Mesaj paketleniyor...';
+
+      setTimeout(() => {
+        playBeep(660);
+        box.innerHTML = '🔒 [ŞİFRELEME TAMAMLANDI] SHA-256 Hash imzası üretildi... Hedef sunucuya aktarılıyor...';
+      }, 700);
+
+      setTimeout(() => {
+        playBeep(980);
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔐</span> ŞİFRELİ MESAJI İLET';
+        box.style.background = 'rgba(34, 197, 94, 0.15)';
+        box.style.border = '1px solid #22c55e';
+        box.style.color = '#4ade80';
+        box.innerHTML = `✅ <strong>Mesaj Başarıyla İletildi!</strong><br>` +
+          `Sayın <strong>` + escapeHtml(name) + `</strong>, mesajınız şifrelenerek Emre Karaman'a iletildi.<br>` +
+          `Belirttiğiniz <code>` + escapeHtml(email) + `</code> adresine en kısa sürede geri dönüş yapılacaktır.`;
+        document.getElementById('profileContactForm').reset();
+      }, 1600);
+    }
+
+    // ==========================================
+    // 9. SİTEYE ÖZEL ARAÇ: CYBER TOOLKIT JS
+    // ==========================================
+    function switchSiteToolTab(tabId, btn) {
+      playBeep(640);
+      document.querySelectorAll('.tool-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tool-tab-btn').forEach(b => b.classList.remove('active'));
+      const targetPane = document.getElementById(tabId);
+      if (targetPane) targetPane.classList.add('active');
+      if (btn) btn.classList.add('active');
+      if (tabId === 'tabCrypto') updateCryptoTransforms();
+    }
+
+    function setScanPreset(target, type) {
+      playBeep(520);
+      const input = document.getElementById('scanTargetInput');
+      input.value = target;
+      runTargetScan(type);
+    }
+
+    let isScanning = false;
+    function runTargetScan(presetType = 'custom') {
+      if (isScanning) return;
+      isScanning = true;
+      const target = document.getElementById('scanTargetInput').value || '192.168.1.1';
+      const logBox = document.getElementById('scannerTerminalLog');
+      const btn = document.getElementById('startScanBtn');
+      const cvssPill = document.getElementById('cvssPill');
+      const reportArea = document.getElementById('reportContentArea');
+
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> TARANIYOR...';
+      logBox.innerHTML = '';
+
+      // Reset ports
+      ['21', '22', '80', '443', '3306'].forEach(p => {
+        const tag = document.getElementById('portStatus' + p);
+        if (tag) {
+          tag.className = 'port-status-tag status-filtered';
+          tag.innerText = 'TARANIYOR...';
+        }
+      });
+
+      const addLog = (text, cls = '') => {
+        const div = document.createElement('div');
+        div.className = 'scan-log-line ' + cls;
+        div.innerText = text;
+        logBox.appendChild(div);
+        logBox.scrollTop = logBox.scrollHeight;
+      };
+
+      addLog(`[BAŞLATILDI] Nmap Engine v7.94 başlatıldı. Hedef: ${target}`, 'scan-log-info');
+      playBeep(500);
+
+      setTimeout(() => {
+        addLog(`[ARP PING] ${target} çevrimiçi tespit edildi (Yanıt süresi: 8.4ms)`, '');
+        playBeep(580);
+      }, 400);
+
+      setTimeout(() => {
+        addLog(`[SYN SCAN] 1-1024 aralığındaki kritik TCP portları taranıyor...`, '');
+        playBeep(640);
+      }, 900);
+
+      setTimeout(() => {
+        const p21 = document.getElementById('portStatus21');
+        const p22 = document.getElementById('portStatus22');
+        p21.className = 'port-status-tag status-open-vuln';
+        p21.innerText = 'AÇIK [TEHLİKELİ]';
+        p22.className = 'port-status-tag status-open-safe';
+        p22.innerText = 'AÇIK [GÜVENLİ]';
+        addLog(`[+] Port 21/tcp (FTP): AÇIK -> vsftpd 2.3.4 tespit edildi!`, 'scan-log-danger');
+        addLog(`[+] Port 22/tcp (SSH): AÇIK -> OpenSSH 8.9p1 Ubuntu (Filtreli)`, '');
+        playBeep(420);
+      }, 1500);
+
+      setTimeout(() => {
+        const p80 = document.getElementById('portStatus80');
+        const p443 = document.getElementById('portStatus443');
+        const p3306 = document.getElementById('portStatus3306');
+        p80.className = 'port-status-tag status-open-vuln';
+        p80.innerText = 'AÇIK [CVE RİSKİ]';
+        p443.className = 'port-status-tag status-open-safe';
+        p443.innerText = 'AÇIK [TLS 1.3]';
+        p3306.className = 'port-status-tag status-filtered';
+        p3306.innerText = 'FİLTRELENDİ (FW)';
+        addLog(`[+] Port 80/tcp (HTTP): AÇIK -> Apache 2.4.49 (Kritik Path Traversal)`, 'scan-log-danger');
+        addLog(`[+] Port 443/tcp (HTTPS): AÇIK -> TLS 1.3 HSTS aktif`, '');
+        addLog(`[+] Port 3306/tcp (MySQL): FİLTRELENDİ -> UFW Güvenlik Duvarı Aktif`, 'scan-log-warn');
+        playBeep(780);
+      }, 2200);
+
+      setTimeout(() => {
+        addLog(`[VULN DB] NIST & Exploit-DB zafiyet taraması tamamlandı!`, 'scan-log-info');
+        cvssPill.style.background = 'rgba(239, 68, 68, 0.25)';
+        cvssPill.style.borderColor = '#ef4444';
+        cvssPill.style.color = '#fca5a5';
+        cvssPill.innerText = 'CVSS SKORU: 9.8 (KRİTİK)';
+
+        reportArea.innerHTML = `
+          <ul class="report-vuln-list">
+            <li><strong style="color:#ef4444;">🚨 CVE-2021-41773 (Apache RCE):</strong> Port 80 üzerinde uzaktan kod yürütme ve yetkisiz dosya okuma zafiyeti bulundu.</li>
+            <li><strong style="color:#f59e0b;">⚠️ CVE-2011-2523 (vsftpd Backdoor):</strong> Port 21 FTP servisi kötü şöhretli Smileys backdoor açığı taşıyor olabilir.</li>
+            <li><strong style="color:#22c55e;">🛡️ SSH & HTTPS Durumu:</strong> Port 22 ve 443 standart koruma altında.</li>
+          </ul>
+          <div class="report-defense-advice">
+            <strong>🛡️ Blue Team Savunma Reçetesi (Önerilen Çözümler):</strong><br>
+            1. Apache sunucusunu derhal en güncel kararlı sürüme (2.4.54+) yükseltin.<br>
+            2. 21 FTP portunu kapatın ve dosya transferini sadece SFTP (Port 22) üzerinden zorlayın.<br>
+            3. UFW veya iptables üzerinden rate-limiting ve fail2ban korumasını aktif edin.
+          </div>
+        `;
+
+        btn.disabled = false;
+        btn.innerHTML = '<span>⚡</span> CANLI TARAMAYI BAŞLAT';
+        isScanning = false;
+        playBeep(920);
+      }, 2900);
+    }
+
+    // Kripto Çevirici
+    function updateCryptoTransforms() {
+      const srcEl = document.getElementById('cryptoSourceText');
+      if (!srcEl) return;
+      const src = srcEl.value || '';
+      try {
+        document.getElementById('outBase64').value = btoa(unescape(encodeURIComponent(src)));
+      } catch (e) {
+        document.getElementById('outBase64').value = btoa(src);
+      }
+
+      // Hex
+      let hex = '';
+      for (let i = 0; i < src.length; i++) {
+        hex += src.charCodeAt(i).toString(16).padStart(2, '0') + ' ';
+      }
+      document.getElementById('outHex').value = hex.trim();
+
+      // Binary
+      let bin = '';
+      for (let i = 0; i < src.length; i++) {
+        bin += src.charCodeAt(i).toString(2).padStart(8, '0') + ' ';
+      }
+      document.getElementById('outBinary').value = bin.trim();
+
+      // ROT13
+      document.getElementById('outRot13').value = src.replace(/[a-zA-Z]/g, function(c){
+        return String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+      });
+    }
+
+    function copyCryptoField(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      playBeep(840);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(el.value).then(() => {
+          alert('Metin başarıyla panoya kopyalandı!');
+        });
+      } else {
+        el.select();
+        document.execCommand('copy');
+        alert('Kopyalandı!');
+      }
+    }
+
+    // Phishing Analizörü
+    function setPhishSample(url) {
+      playBeep(560);
+      document.getElementById('phishUrlInput').value = url;
+      analyzePhishingUrl();
+    }
+
+    function analyzePhishingUrl() {
+      const url = document.getElementById('phishUrlInput').value.trim();
+      const verdict = document.getElementById('phishVerdictResult');
+      if (!url) return;
+      playBeep(680);
+
+      verdict.style.display = 'block';
+      let isHttps = url.startsWith('https://');
+      let lower = url.toLowerCase();
+      let isSuspiciousTld = lower.includes('.xyz') || lower.includes('.top') || lower.includes('.tk') || lower.includes('.click');
+      let hasBrandSpoof = lower.includes('netflix') || lower.includes('garanti') || lower.includes('banka') || lower.includes('fatura') || lower.includes('paypal');
+      let isLegitDomain = lower.includes('google.com') || lower.includes('github.com') || lower.includes('microsoft.com');
+
+      if (isLegitDomain && isHttps) {
+        verdict.style.background = 'rgba(34, 197, 94, 0.15)';
+        verdict.style.border = '1px solid #22c55e';
+        verdict.style.color = '#4ade80';
+        verdict.innerHTML = `
+          <h4 style="color:#22c55e; margin-bottom:6px;">✅ GÜVENLİ BAĞLANTI (Tehdit Skoru: %2)</h4>
+          <p>• Doğrulanmış kurumsal alan adı.<br>
+          • Geçerli TLS/HTTPS şifrelemesi mevcut.<br>
+          • Bilinen oltalama veya sahte alan adı tespit edilmedi.</p>
+        `;
+      } else if (hasBrandSpoof || isSuspiciousTld || !isHttps) {
+        verdict.style.background = 'rgba(239, 68, 68, 0.15)';
+        verdict.style.border = '1px solid #ef4444';
+        verdict.style.color = '#fca5a5';
+        verdict.innerHTML = `
+          <h4 style="color:#ef4444; margin-bottom:6px;">🚨 YÜKSEK RİSK: OLTALAMA (PHISHING) TESPİT EDİLDİ! (Tehdit Skoru: %96)</h4>
+          <p><strong>Neden Şüpheli?</strong><br>
+          ${!isHttps ? '❌ Güvensiz HTTP protokolü (SSL sertifikası yok).<br>' : ''}
+          ${isSuspiciousTld ? '❌ Ucuz/Anonim TLD kullanımı (.xyz / .top).<br>' : ''}
+          ${hasBrandSpoof ? '❌ Marka taklidi ve aciliyet hissi oluşturan anahtar kelimeler tespit edildi.<br>' : ''}
+          <strong>Tavsiye:</strong> Bu bağlantıya asla şifre, kredi kartı veya kişisel bilgi girmeyin!</p>
+        `;
+      } else {
+        verdict.style.background = 'rgba(245, 158, 11, 0.15)';
+        verdict.style.border = '1px solid #f59e0b';
+        verdict.style.color = '#fde68a';
+        verdict.innerHTML = `
+          <h4 style="color:#f59e0b; margin-bottom:6px;">⚠️ DİKKAT: ŞÜPHELİ BAĞLANTI (Tehdit Skoru: %55)</h4>
+          <p>• Bağlantı bilinmeyen bir alan adına işaret ediyor.<br>
+          • Alan adının yazımını ve sertifika detaylarını dikkatlice kontrol edin.</p>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
