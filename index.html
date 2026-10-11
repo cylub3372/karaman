@@ -1817,6 +1817,455 @@
       line-height: 1.7;
     }
 
+    /* ======================================================== */
+    /* 10. 🚨 SİBER İLK YARDIM // PANİK BUTONU STİLLERİ         */
+    /* ======================================================== */
+    .emergency-panic-btn {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.5px;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.35);
+      position: relative;
+    }
+
+    .emergency-panic-btn:hover {
+      background: #ef4444;
+      color: #0f0505;
+      box-shadow: 0 0 25px #ef4444;
+      transform: scale(1.03);
+    }
+
+    .panic-beacon {
+      width: 10px;
+      height: 10px;
+      background: #ef4444;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 8px #ef4444;
+      animation: panicPulse 1.2s infinite;
+    }
+
+    @keyframes panicPulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 15px #ef4444; }
+      100% { transform: scale(0.9); opacity: 0.6; }
+    }
+
+    /* Acil Durum Modal Penceresi */
+    .emergency-modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(3, 7, 5, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .emergency-modal-backdrop.is-open {
+      display: flex;
+    }
+
+    .emergency-modal-box {
+      background: #050a07;
+      border: 2px solid #ef4444;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 900px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 50px rgba(239, 68, 68, 0.35);
+      overflow: hidden;
+      animation: modalDropIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes modalDropIn {
+      from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .emergency-modal-header {
+      background: #140505;
+      border-bottom: 1px solid #7f1d1d;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .emergency-modal-title {
+      color: #ef4444;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .emergency-close-btn {
+      background: transparent;
+      border: 1px solid #7f1d1d;
+      color: #fca5a5;
+      font-size: 1.2rem;
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .emergency-close-btn:hover {
+      background: #ef4444;
+      color: #000;
+    }
+
+    .emergency-modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .emergency-scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .scenario-card-btn {
+      background: rgba(20, 10, 10, 0.7);
+      border: 1px solid #7f1d1d;
+      color: #fca5a5;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .scenario-card-btn:hover, .scenario-card-btn.active {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+    }
+
+    .emergency-steps-container {
+      background: #030805;
+      border: 1px solid #22c55e;
+      border-left: 4px solid #ef4444;
+      border-radius: 8px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .step-item:last-child { border-bottom: none; }
+
+    .step-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: #22c55e;
+      cursor: pointer;
+      margin-top: 3px;
+    }
+
+    .step-info {
+      flex: 1;
+    }
+    .step-info strong {
+      display: block;
+      color: #ffffff;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .step-info p {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .emergency-helpline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .helpline-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid #1e293b;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+    .helpline-card strong {
+      color: var(--c-green);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* ======================================================== */
+    /* 11. 🤖 "KARAMAN" YAPAY ZEKA SİBER ASİSTANI STİLLERİ      */
+    /* ======================================================== */
+    .karaman-bot-widget {
+      position: fixed;
+      bottom: 26px;
+      right: 26px;
+      z-index: 9999;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .karaman-floating-btn {
+      background: linear-gradient(135deg, #022c22 0%, #064e3b 100%);
+      border: 2px solid var(--c-green);
+      color: var(--c-green);
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .karaman-floating-btn:hover {
+      transform: translateY(-4px) scale(1.04);
+      background: var(--c-green);
+      color: #030805;
+      box-shadow: 0 0 35px var(--c-green);
+    }
+
+    .karaman-status-dot {
+      width: 10px;
+      height: 10px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulseGreen 1.8s infinite;
+    }
+
+    /* Chatbot Penceresi */
+    .karaman-chat-window {
+      display: none;
+      width: 400px;
+      max-width: calc(100vw - 36px);
+      height: 560px;
+      max-height: calc(100vh - 120px);
+      background: rgba(3, 10, 6, 0.95);
+      border: 1px solid var(--c-green);
+      border-radius: 14px;
+      box-shadow: 0 0 45px rgba(0, 255, 102, 0.25);
+      backdrop-filter: blur(12px);
+      flex-direction: column;
+      overflow: hidden;
+      margin-bottom: 14px;
+      animation: chatPopup 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .karaman-chat-window.is-open {
+      display: flex;
+    }
+
+    @keyframes chatPopup {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .karaman-chat-header {
+      background: #06180e;
+      border-bottom: 1px solid #143521;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .karaman-chat-title-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .karaman-avatar-icon {
+      font-size: 1.4rem;
+    }
+
+    .karaman-title-main {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--c-green);
+      letter-spacing: 0.5px;
+    }
+
+    .karaman-subtitle {
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+
+    .karaman-chat-minimize {
+      background: transparent;
+      border: 1px solid #1c4a2e;
+      color: #94a3b8;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .karaman-chat-minimize:hover {
+      border-color: var(--c-green);
+      color: var(--c-green);
+    }
+
+    .karaman-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .msg-bubble {
+      max-width: 86%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      word-break: break-word;
+    }
+
+    .msg-bot {
+      align-self: flex-start;
+      background: rgba(6, 24, 15, 0.85);
+      border: 1px solid #1c4a2e;
+      border-left: 3px solid var(--c-green);
+      color: #e2e8f0;
+      border-radius: 2px 12px 12px 12px;
+    }
+
+    .msg-user {
+      align-self: flex-end;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid #0284c7;
+      border-right: 3px solid #38bdf8;
+      color: #ffffff;
+      border-radius: 12px 2px 12px 12px;
+    }
+
+    .karaman-quick-chips {
+      padding: 8px 14px;
+      background: #020704;
+      border-top: 1px solid #0e2417;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .quick-chip {
+      background: rgba(0, 255, 102, 0.08);
+      border: 1px solid #143521;
+      color: #a7f3d0;
+      font-size: 0.75rem;
+      padding: 5px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .quick-chip:hover {
+      border-color: var(--c-green);
+      color: #ffffff;
+      background: rgba(0, 255, 102, 0.16);
+    }
+
+    .karaman-chat-input-bar {
+      padding: 12px 14px;
+      background: #041009;
+      border-top: 1px solid #143521;
+      display: flex;
+      gap: 8px;
+    }
+
+    .karaman-input-field {
+      flex: 1;
+      background: #010402;
+      border: 1px solid #143521;
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .karaman-input-field:focus {
+      border-color: var(--c-green);
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+    }
+
+    .karaman-send-btn {
+      background: rgba(0, 255, 102, 0.15);
+      border: 1px solid var(--c-green);
+      color: var(--c-green);
+      padding: 0 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .karaman-send-btn:hover {
+      background: var(--c-green);
+      color: #030805;
+      box-shadow: 0 0 15px var(--c-green);
+    }
+
     /* Ortak Geri Dön Butonu */
     .close-panel-btn {
       display: inline-block;
@@ -1882,6 +2331,12 @@
     <a href="#siteToolSection" class="site-tool-header-btn" title="Siteye Özel Port & Zafiyet Tarayıcısına Git" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; background:rgba(0, 255, 102, 0.12); border:1px solid var(--c-green); color:var(--c-green); padding:7px 14px; border-radius:6px; font-size:0.8rem; font-weight:700; transition:all 0.2s;">
       <span>⚡</span> SİTE ARACI: TARAYICI
     </a>
+
+    <!-- 🚨 SİBER İLK YARDIM // PANİK BUTONU (HEADER) -->
+    <button class="emergency-panic-btn" onclick="openEmergencyModal()" title="🚨 Siber Acil Durum / Panik Butonunu Başlat">
+      <span class="panic-beacon"></span>
+      <span>🚨 SİBER İLK YARDIM</span>
+    </button>
     
     <div class="designer-badge" id="headerProfileBadge" style="cursor: pointer;" title="👤 Emre Karaman Profil & İletişimini Aç">
       <img src="emre.jpeg" alt="Emre Karaman" class="designer-avatar">
@@ -3584,6 +4039,356 @@ Kullanabileceğiniz komutları görmek için 'help' yazın.
         `;
       }
     }
+
+    // ==========================================
+    // 10. 🚨 SİBER İLK YARDIM // PANİK MODAL JS
+    // ==========================================
+    const emergencyScenarios = {
+      account: {
+        title: "📱 HESABIM ÇALINDI // ACİL KURTARMA ADIMLARI",
+        steps: [
+          { strong: "1. E-Posta Bildirimlerini Kontrol Edin", desc: "Hesabınıza bağlı e-posta kutusuna gelen 'Şifreniz/E-postanız değiştirildi mi?' mailindeki 'Bu ben değildim (Geri Al)' bağlantısına hemen tıklayın." },
+          { strong: "2. E-Posta Şifrenizi Değiştirin ve 2FA Açın", desc: "Saldırgan e-postanıza sızmış olabilir. E-posta şifrenizi başka bir temiz cihazdan değiştirin ve Google Authenticator (2FA) kurun." },
+          { strong: "3. Resmi Kurtarma Formunu Doldurun", desc: "Instagram/WhatsApp destek sayfasından yüz doğrulaması (Video Selfie) veya eski şifrelerle resmi hesap kurtarma talebi iletin." },
+          { strong: "4. Takipçilerinizi ve Yakınlarınızı Uyarın", desc: "Saldırgan adınıza borç istemeden veya sahte yatırım linki atmadan önce başka bir mecrada hikaye atarak yakınlarınızı bilgilendirin." }
+        ]
+      },
+      phish: {
+        title: "🎣 ŞÜPHELİ LİNKE TIKLADIM // ACİL EYLEM PLANI",
+        steps: [
+          { strong: "1. İnternet Bağlantısını Derhal Kesin", desc: "Cihazınızın Wi-Fi ve Mobil Verisini kapatın, Uçak Moduna alın. Zararlı yazılımın komuta merkezine veri aktarmasını önleyin." },
+          { strong: "2. Tarayıcı Çerezlerini ve Verilerini Temizleyin", desc: "Tarayıcınızın geçmişini, oturum çerezlerini ve önbelleğini tamamen sıfırlayın." },
+          { strong: "3. İndirilen Dosyaları Açmadan Silin", desc: "Bağlantıdan herhangi bir dosya (.apk, .exe, .zip) indiyse ASLA dokunmayın ve cihazdan kalıcı olarak silin." },
+          { strong: "4. Hesap Şifrelerini Temiz Bir Cihazdan Güncelleyin", desc: "Girdiğiniz veya cihazda kayıtlı olan kritik hesap parolalarını başka bir bilgisayardan veya telefondan değiştirin." }
+        ]
+      },
+      card: {
+        title: "💳 BANKA / KART BİLGİM ÇALINDI // ACİL FİNANSAL KALKAN",
+        steps: [
+          { strong: "1. Bankayı Arayın ve Kartı Derhal Dondurun", desc: "Bankanızın çağrı merkezini arayıp kartınızı internet harcamalarına kapatın veya tamamen iptal edip yenisini talep edin." },
+          { strong: "2. Mobil Bankacılıktan Limitleri 0 TL Yapın", desc: "Mobil uygulamadan kartın internet, yurt dışı ve temassız işlem limitlerini anında 0 TL'ye düşürün." },
+          { strong: "3. 'Harcama İtirazı' (Chargeback) Dilekçesi Verin", desc: "Sizin bilginiz dışında çekilen tutarlar için bankanıza resmi harcama itirazı belgesi gönderin (Uluslararası kurallarla paranız iade edilebilir)." },
+          { strong: "4. Savcılık & Siber Suçlar İhbarı", desc: "Banka hesap hareketlerinizin dökümünü alarak en yakın adliyede Siber Suçlar Bürosuna şikayette bulunun." }
+        ]
+      },
+      virus: {
+        title: "💻 CİHAZIMA VİRÜS / RANSOMWARE BULAŞTI // SİSTEM İZOLASYONU",
+        steps: [
+          { strong: "1. Cihazı Ağdan ve İnternetten İzole Edin", desc: "Ethernet kablosunu çekin, Wi-Fi'ı kapatın. Fidye virüslerinin ağdaki diğer modem veya bilgisayarlara yayılmasını engelleyin." },
+          { strong: "2. Cihazı 'Güvenli Mod'da (Safe Mode) Başlatın", desc: "Windows veya telefonunuzu Güvenli Modda açarak zararlı yazılımın başlangıçta çalışmasını engelleyin." },
+          { strong: "3. Güvenilir Antivirüs ile Derin Tarama Yapın", desc: "Malwarebytes veya Kaspersky Rescue Disk ile sistemi baştan sona taratıp zararlı dosyaları karantinaya alın." },
+          { strong: "4. Fidye Asla Ödemeyin", desc: "Fidye yazılımlarında şifre çözüleceğinin garantisi yoktur. nomoreransom.org üzerinden ücretsiz şifre çözücü anahtarları kontrol edin." }
+        ]
+      },
+      blackmail: {
+        title: "📞 ŞANTAJ VE SİBER ZORBALIK // HUKUKİ KORUMA ADIMLARI",
+        steps: [
+          { strong: "1. Delilleri Eksiksiz Ekran Görüntüsü Alarak Saklayın", desc: "Şantaj mesajlarını, profil kullanıcı adını, linkini, tehdit içeriğini ve IBAN/kripto taleplerini tarih ve saat görünecek şekilde kaydedin." },
+          { strong: "2. Asla Para Göndermeyin ve İletişimi Kesin", desc: "Para göndermek şantajcıyı durdurmaz, aksine daha fazla talep etmesine yol açar. Sakin kalın ve para aktarmayın." },
+          { strong: "3. Platforma 'Şantaj / İntikam Pornosu' Bildirimi Yapın", desc: "Instagram, WhatsApp veya ilgili platform üzerinden profili 'Şantaj ve Taciz' kategorisinde derhal şikayet edin." },
+          { strong: "4. E-Devlet CİMER veya EGM Siber Suçlar Suç Duyurusu", desc: "CİMER üzerinden veya doğrudan Cumhuriyet Başsavcılığı Bilişim Suçları Bürosuna delillerle şikayetçi olun." }
+        ]
+      }
+    };
+
+    let currentScenarioKey = 'account';
+
+    function openEmergencyModal() {
+      playBeep(440);
+      document.getElementById('emergencyModalBackdrop').classList.add('is-open');
+      selectEmergencyScenario('account');
+    }
+
+    function closeEmergencyModal() {
+      playBeep(320);
+      document.getElementById('emergencyModalBackdrop').classList.remove('is-open');
+    }
+
+    function handleEmergencyBackdropClick(e) {
+      if (e.target.id === 'emergencyModalBackdrop') closeEmergencyModal();
+    }
+
+    function selectEmergencyScenario(key) {
+      currentScenarioKey = key;
+      playBeep(620);
+      document.querySelectorAll('.scenario-card-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('scenBtn_' + key);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const data = emergencyScenarios[key];
+      if (!data) return;
+
+      document.getElementById('emergencyScenarioTitle').innerText = data.title;
+      const listEl = document.getElementById('emergencyStepsList');
+      listEl.innerHTML = '';
+
+      data.steps.forEach((step, idx) => {
+        const item = document.createElement('div');
+        item.className = 'step-item';
+        item.innerHTML = `
+          <input type="checkbox" class="step-checkbox" id="chk_${key}_${idx}" onchange="updateEmergencyProgress()">
+          <div class="step-info">
+            <strong>${step.strong}</strong>
+            <p>${step.desc}</p>
+          </div>
+        `;
+        listEl.appendChild(item);
+      });
+
+      updateEmergencyProgress();
+    }
+
+    function updateEmergencyProgress() {
+      const checkboxes = document.querySelectorAll('#emergencyStepsList .step-checkbox');
+      let checked = 0;
+      checkboxes.forEach(c => { if (c.checked) checked++; });
+      const total = checkboxes.length || 1;
+      const pct = Math.round((checked / total) * 100);
+      const txt = document.getElementById('emergencyProgressText');
+      txt.innerText = `Kurtarma İlerlemesi: %${pct}`;
+      if (pct === 100) {
+        txt.style.color = '#22c55e';
+        txt.innerHTML = '🎉 %100 TAMAMLANDI // GÜVENLİK SAĞLANDI';
+        playBeep(920);
+      } else {
+        txt.style.color = '#f59e0b';
+      }
+    }
+
+    // ==========================================
+    // 11. 🤖 "KARAMAN" YAPAY ZEKA SİBER ASİSTANI JS
+    // ==========================================
+    let isKaramanOpen = false;
+
+    function toggleKaramanChat() {
+      const win = document.getElementById('karamanChatWindow');
+      isKaramanOpen = !isKaramanOpen;
+      if (isKaramanOpen) {
+        win.classList.add('is-open');
+        playBeep(720);
+        setTimeout(() => {
+          document.getElementById('karamanInput').focus();
+        }, 150);
+      } else {
+        win.classList.remove('is-open');
+        playBeep(360);
+      }
+    }
+
+    const karamanKnowledge = [
+      {
+        keywords: ['nmap', 'port', 'tarama', 'scanner', 'servis'],
+        answer: '🛡️ <strong>Nmap (Network Mapper) Nedir?</strong><br>Ağdaki cihazları, açık portları ve çalışan servisleri tespit etmek için kullanılan endüstri standardı bir araçtır.<br><br><strong>Popüler Nmap Komutları:</strong><br><code>nmap -sS -p- hedef.com</code> (Hızlı SYN Taraması)<br><code>nmap -sV -sC -T4 hedef.com</code> (Zafiyet ve Versiyon Taraması)<br><br>💡 Sitemizdeki <em>"SİTE ARACI: TARAYICI"</em> butonuna basarak canlı Nmap simülatörünü hemen test edebilirsin!'
+      },
+      {
+        keywords: ['instagram', 'whatsapp', 'sosyal', 'hesap', 'çalınma', 'koru'],
+        answer: '📱 <strong>Sosyal Medya Güvenliği İpuçları:</strong><br>1. <strong>İki Faktörlü Doğrulama (2FA):</strong> SMS yerine mutlaka Google Authenticator veya Duo Mobile kullanın.<br>2. <strong>Güçlü Parola:</strong> En az 14 karakterli, sözlükte olmayan karmaşık şifreler seçin.<br>3. <strong>Giriş Uyarıları:</strong> Hesabınıza başka cihazdan girildiğinde anında bildirim almayı aktif edin.<br>4. <strong>Sahte Doğrulama Mesajları:</strong> "Telif hakkı ihlali yaptınız" diyen DM linklerine ASLA tıklamayın!'
+      },
+      {
+        keywords: ['phishing', 'oltalama', 'sahte', 'link', 'tıkla', 'dolandır'],
+        answer: '🎣 <strong>Phishing (Oltalama) Saldırısı Nasıl Anlaşılır?</strong><br>• <strong>Alan Adı Hileleri:</strong> <code>netflix-guvenlik.xyz</code> gibi sahte uzantılar kullanılır.<br>• <strong>Aciliyet Psikolojisi:</strong> "Hesabınız 2 saat içinde silinecek!" diyerek paniğe sürüklerler.<br>• <strong>Şüpheli Giriş Talebi:</strong> Kart bilgisi veya şifre isteyen resmi olmayan sayfalara dikkat edin.<br><br>💡 Sitemizdeki Phishing Analizörü ile şüpheli linkleri yapıştırıp test edebilirsin!'
+      },
+      {
+        keywords: ['şifre', 'parola', 'password', 'kırılma', 'güçlü'],
+        answer: '🔐 <strong>Kırılamaz Parola Nasıl Üretilir?</strong><br>• <strong>Parola Cümlesi (Passphrase) Tekniği:</strong> Tek bir kelime yerine 4 rastgele kelimeyi birleştirin (Örn: <code>Mavi*Kedi!Uzayda99</code>).<br>• <strong>Uzunluk > Karmaşıklık:</strong> 16 karakterlik bir cümle, kaba kuvvet (brute-force) saldırılarıyla milyonlarca yılda bile kırılamaz.<br>• <strong>Şifre Yöneticisi:</strong> Bitwarden veya 1Password kullanarak her sitede farklı parola oluşturun.'
+      },
+      {
+        keywords: ['linux', 'kali', 'parrot', 'dağıtım', 'os', 'işletim'],
+        answer: '🐧 <strong>Siber Güvenlik İçin Hangi Linux?</strong><br>• <strong>Kali Linux:</strong> Penetrasyon testleri ve etik hacking için 600+ hazır siber araçla gelen en popüler sistemdir.<br>• <strong>Parrot Security OS:</strong> Kali\'ye göre daha hafif ve gizlilik odaklı mükemmel bir alternatiftir.<br>• <strong>Başlangıç Önerisi:</strong> Sanal makine (VirtualBox) kurarak Kali Linux ile pratik yapmaya başlayabilirsin!'
+      },
+      {
+        keywords: ['wireshark', 'paket', 'ağ', 'analiz', 'sniff'],
+        answer: '🦈 <strong>Wireshark Nedir?</strong><br>Ağ kartınızdan geçen tüm veri paketlerini gerçek zamanlı yakalayıp inceleyen bir paket analizörüdür.<br>• Şifresiz HTTP trafiğindeki verileri görebilir.<br>• <code>tcp.port == 80</code> veya <code>ip.addr == 192.168.1.1</code> gibi filtrelerle anlık ağ analizi yapabilirsin.'
+      },
+      {
+        keywords: ['emre', 'karaman', 'kimdir', 'iletişim', 'sahibi', 'kurucu'],
+        answer: '👤 <strong>Emre Karaman Hakkında:</strong><br>Bu interaktif siber güvenlik komuta merkezinin mimarı, etik hacker ve sistem savunucusu (Blue Team) araştırmacısıdır.<br><br><strong>İletişim Bilgileri:</strong><br>• 📷 Instagram: <a href="https://instagram.com/emrekaramann0" target="_blank" style="color:#fb7185;">@emrekaramann0</a><br>• 🐙 GitHub: <a href="https://github.com/cylub3372/karaman" target="_blank" style="color:#ffffff;">cylub3372 / karaman</a><br>• ✉️ E-Posta: <a href="mailto:emrekaraman346@gmail.com" style="color:#22c55e;">emrekaraman346@gmail.com</a>'
+      },
+      {
+        keywords: ['selam', 'merhaba', 'hey', 'naber', 'günaydın', 'iyi'],
+        answer: '👋 <strong>Selam! Hoş geldin.</strong><br>Ben <strong>KARAMAN AI</strong>, Emre Karaman Siber Portalı\'nın akıllı savunma çekirdeğiyim. Siber dünyada güvenliğini artırmak veya hacker araçlarını öğrenmek için bana dilediğini sorabilirsin!'
+      }
+    ];
+
+    function askKaramanPreset(prompt) {
+      document.getElementById('karamanInput').value = prompt;
+      handleKaramanSubmit();
+    }
+
+    function handleKaramanSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('karamanInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      addKaramanMessage(text, 'msg-user');
+      playBeep(520);
+
+      // Typing indicator
+      const chatMessages = document.getElementById('karamanChatMessages');
+      const typingEl = document.createElement('div');
+      typingEl.className = 'msg-bubble msg-bot';
+      typingEl.id = 'karamanTypingIndicator';
+      typingEl.innerHTML = '⚡ <em>KARAMAN analiz ediyor...</em>';
+      chatMessages.appendChild(typingEl);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      setTimeout(() => {
+        const ind = document.getElementById('karamanTypingIndicator');
+        if (ind) ind.remove();
+
+        const lower = text.toLowerCase();
+        let found = karamanKnowledge.find(k => k.keywords.some(kw => lower.includes(kw)));
+        let reply = '';
+        if (found) {
+          reply = found.answer;
+        } else {
+          reply = `🤖 <strong>KARAMAN Yanıtı:</strong><br>
+            Sorunu siber güvenlik bilgi tabanımda taradım. "${escapeHtml(text)}" konusu hakkında savunma mimarisi ve etik korsanlık rehberlerimiz hazır!<br><br>
+            Dilersen üst menüdeki <strong>10 Adımlık Yol Haritası</strong>, <strong>Linux Terminali</strong> veya <strong>Zafiyet Tarayıcısı</strong> modüllerimizi inceleyebilir ya da doğrudan <strong>Emre Karaman</strong> ile iletişime geçebilirsin.`;
+        }
+
+        addKaramanMessage(reply, 'msg-bot');
+        playBeep(880);
+      }, 700);
+    }
+
+    function addKaramanMessage(content, cls) {
+      const chatMessages = document.getElementById('karamanChatMessages');
+      const msg = document.createElement('div');
+      msg.className = 'msg-bubble ' + cls;
+      msg.innerHTML = content;
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
   </script>
+
+  <!-- ======================================================== -->
+  <!-- 🚨 SİBER İLK YARDIM // ACİL DURUM VE PANİK MODALI        -->
+  <!-- ======================================================== -->
+  <div class="emergency-modal-backdrop" id="emergencyModalBackdrop" onclick="handleEmergencyBackdropClick(event)">
+    <div class="emergency-modal-box">
+      <div class="emergency-modal-header">
+        <div class="emergency-modal-title">
+          <span class="panic-beacon"></span>
+          <span>🚨 SİBER İLK YARDIM // ACİL DURUM EYLEM REHBERİ</span>
+        </div>
+        <button class="emergency-close-btn" onclick="closeEmergencyModal()" title="Kapat">✕</button>
+      </div>
+
+      <div class="emergency-modal-body">
+        <p style="color:#94a3b8; font-size:0.88rem; margin-bottom:18px;">
+          Bir siber saldırı, hesap çalınması veya şüpheli durumla karşılaştığınızda paniğe kapılmayın. Yaşadığınız senaryoyu seçin ve adımları sırayla uygulayın:
+        </p>
+
+        <!-- Senaryo Butonları -->
+        <div class="emergency-scenario-grid">
+          <button class="scenario-card-btn active" id="scenBtn_account" onclick="selectEmergencyScenario('account')">
+            <span>📱</span> <strong>Hesabım Çalındı</strong>
+            <small style="opacity:0.7;">Instagram, WhatsApp vb.</small>
+          </button>
+          <button class="scenario-card-btn" id="scenBtn_phish" onclick="selectEmergencyScenario('phish')">
+            <span>🎣</span> <strong>Linke Tıkladım</strong>
+            <small style="opacity:0.7;">Sahte SMS / Mail</small>
+          </button>
+          <button class="scenario-card-btn" id="scenBtn_card" onclick="selectEmergencyScenario('card')">
+            <span>💳</span> <strong>Banka / Kart Çalındı</strong>
+            <small style="opacity:0.7;">Yetkisiz Harcama</small>
+          </button>
+          <button class="scenario-card-btn" id="scenBtn_virus" onclick="selectEmergencyScenario('virus')">
+            <span>💻</span> <strong>Virüs / Fidye Yazılımı</strong>
+            <small style="opacity:0.7;">Dosyalar Kilitlendi</small>
+          </button>
+          <button class="scenario-card-btn" id="scenBtn_blackmail" onclick="selectEmergencyScenario('blackmail')">
+            <span>📞</span> <strong>Şantaj & Tehdit</strong>
+            <small style="opacity:0.7;">Siber Zorbalık</small>
+          </button>
+        </div>
+
+        <!-- Adım Listesi & Kurtarma Durumu -->
+        <div class="emergency-steps-container">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #143521; padding-bottom:8px;">
+            <span style="color:#ef4444; font-weight:800; font-size:0.95rem;" id="emergencyScenarioTitle">📱 HESABIM ÇALINDI // ACİL KURTARMA ADIMLARI</span>
+            <span style="color:#22c55e; font-weight:700; font-size:0.85rem;" id="emergencyProgressText">Kurtarma: %0</span>
+          </div>
+
+          <div id="emergencyStepsList"></div>
+        </div>
+
+        <!-- Resmi İhbar Hatları -->
+        <div style="margin-top:20px;">
+          <h4 style="color:#ffffff; font-size:0.95rem; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+            <span>🛡️</span> Resmi İhbar ve Doğrudan Destek Kanalları
+          </h4>
+          <div class="emergency-helpline-grid">
+            <div class="helpline-card">
+              <strong>👮 USOM (Ulusal Siber Olaylar)</strong>
+              <span>Web: <a href="https://www.usom.gov.tr" target="_blank" style="color:#38bdf8;">usom.gov.tr</a><br>E-Posta: ihbar@usom.gov.tr</span>
+            </div>
+            <div class="helpline-card">
+              <strong>🚨 EGM Siber Suçlarla Mücadele</strong>
+              <span>Web: <a href="https://www.siber.egm.gov.tr" target="_blank" style="color:#38bdf8;">siber.egm.gov.tr</a><br>Alo 112 Acil İhbar</span>
+            </div>
+            <div class="helpline-card">
+              <strong>✉️ Emre Karaman Destek</strong>
+              <span>E-Posta: <a href="mailto:emrekaraman346@gmail.com" style="color:#22c55e;">emrekaraman346@gmail.com</a><br>Instagram: @emrekaramann0</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 🤖 "KARAMAN" YAPAY ZEKA SİBER GÜVENLİK ASİSTANI         -->
+  <!-- ======================================================== -->
+  <div class="karaman-bot-widget" id="karamanBotWidget">
+    
+    <!-- Chat Penceresi -->
+    <div class="karaman-chat-window" id="karamanChatWindow">
+      <div class="karaman-chat-header">
+        <div class="karaman-chat-title-info">
+          <span class="karaman-avatar-icon">🤖</span>
+          <div>
+            <div class="karaman-title-main">KARAMAN AI // ASİSTAN</div>
+            <div class="karaman-subtitle">Siber Savunma Çekirdeği v2.6</div>
+          </div>
+        </div>
+        <button class="karaman-chat-minimize" onclick="toggleKaramanChat()" title="Küçült">✕</button>
+      </div>
+
+      <!-- Mesajlar Listesi -->
+      <div class="karaman-chat-messages" id="karamanChatMessages">
+        <div class="msg-bubble msg-bot">
+          👋 <strong>Selam! Ben KARAMAN.</strong><br>
+          Emre Karaman tarafından eğitilmiş yapay zeka siber güvenlik asistanıyım. Ağ analizi, hackten korunma, güvenli şifreleme veya penetrasyon testleri hakkında aklına takılan her şeyi bana sorabilirsin!
+        </div>
+      </div>
+
+      <!-- Hızlı Soru Rozetleri -->
+      <div class="karaman-quick-chips">
+        <span class="quick-chip" onclick="askKaramanPreset('Instagram hesabımı nasıl korurum?')">📱 Instagram Güvenliği</span>
+        <span class="quick-chip" onclick="askKaramanPreset('Nmap nedir ve nasıl kullanılır?')">🛡️ Nmap Port Taraması</span>
+        <span class="quick-chip" onclick="askKaramanPreset('Phishing saldırısı nasıl anlaşılır?')">🎣 Phishing Taktikleri</span>
+        <span class="quick-chip" onclick="askKaramanPreset('Kırılması imkansız şifre nasıl yapılır?')">🔐 Güçlü Şifreleme</span>
+        <span class="quick-chip" onclick="askKaramanPreset('Hangi Linux dağıtımı siber güvenlik için en iyisi?')">🐧 Linux Önerisi</span>
+        <span class="quick-chip" onclick="askKaramanPreset('Emre Karaman kimdir ve nasıl ulaşırım?')">👤 Emre Karaman</span>
+      </div>
+
+      <!-- Mesaj Giriş Barı -->
+      <form class="karaman-chat-input-bar" onsubmit="handleKaramanSubmit(event)">
+        <input type="text" id="karamanInput" class="karaman-input-field" placeholder="KARAMAN'a bir siber güvenlik sorusu sor..." autocomplete="off">
+        <button type="submit" class="karaman-send-btn" title="Gönder">➔</button>
+      </form>
+    </div>
+
+    <!-- Tetikleyici Yüzen Buton -->
+    <button class="karaman-floating-btn" id="karamanTriggerBtn" onclick="toggleKaramanChat()" title="KARAMAN Siber Yapay Zeka Asistanı ile Konuş">
+      <span class="karaman-status-dot"></span>
+      <span>🤖 KARAMAN AI</span>
+    </button>
+  </div>
 </body>
 </html>
