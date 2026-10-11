@@ -23,6 +23,7 @@
       --c-emerald: #10b981;
       --c-orange: #ff5722;
       --c-blue: #38bdf8;
+      --c-gold: #facc15;
     }
 
     * {
@@ -460,6 +461,17 @@
     .pc-blue .screen-desc { color: #bae6fd; }
     .pc-blue .computer-action-btn { background: rgba(56, 189, 248, 0.12); border: 1px solid var(--c-blue); color: var(--c-blue); }
     .pc-blue:hover .computer-action-btn { background: var(--c-blue); color: #050807; box-shadow: 0 0 15px var(--c-blue); }
+
+    /* 9. Altın Sarısı (CTF & Başarı Sertifikası) */
+    .pc-gold { border-color: rgba(250, 204, 21, 0.3); }
+    .pc-gold:hover { border-color: var(--c-gold); box-shadow: 0 0 30px rgba(250, 204, 21, 0.4); }
+    .pc-gold .computer-badge { background: rgba(250, 204, 21, 0.12); color: var(--c-gold); border: 1px solid var(--c-gold); }
+    .pc-gold .laptop-screen { border-color: #ca8a04; box-shadow: inset 0 0 20px rgba(250, 204, 21, 0.2); }
+    .pc-gold .screen-matrix-bg { color: var(--c-gold); }
+    .pc-gold .screen-title { color: var(--c-gold); text-shadow: 0 0 8px var(--c-gold); }
+    .pc-gold .screen-desc { color: #fef08a; }
+    .pc-gold .computer-action-btn { background: rgba(250, 204, 21, 0.12); border: 1px solid var(--c-gold); color: var(--c-gold); }
+    .pc-gold:hover .computer-action-btn { background: var(--c-gold); color: #050807; box-shadow: 0 0 15px var(--c-gold); }
 
     /* İÇERİK PANELLERİ */
     .content-panel {
@@ -2266,6 +2278,254 @@
       box-shadow: 0 0 15px var(--c-green);
     }
 
+    /* ======================================================== */
+    /* 12. FÜTÜRİSTİK HUD KÖŞELİKLERİ & TELEMETRİ BANDI         */
+    /* ======================================================== */
+    .hud-bracket {
+      position: fixed;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--c-green);
+      pointer-events: none;
+      z-index: 9990;
+      opacity: 0.7;
+      transition: border-color 0.4s ease;
+    }
+    .hud-top-left { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+    .hud-top-right { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+    .hud-bottom-left { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+    .hud-bottom-right { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+    /* CANLI TELEMETRİ BANDI */
+    .hud-telemetry-bar {
+      width: 100%;
+      background: rgba(3, 8, 5, 0.95);
+      border-bottom: 1px solid rgba(0, 255, 102, 0.25);
+      padding: 6px 18px;
+      font-size: 0.72rem;
+      color: var(--c-green);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      letter-spacing: 0.8px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .hud-telemetry-items {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hud-telemetry-item strong {
+      color: #ffffff;
+    }
+
+    /* TEMA SEÇİCİ */
+    .theme-selector-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      color: #94a3b8;
+    }
+    .theme-dots-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .theme-btn-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid #000;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .theme-btn-dot:hover, .theme-btn-dot.active {
+      transform: scale(1.3);
+      border-color: #ffffff;
+    }
+    .t-matrix { background: #00ff66; box-shadow: 0 0 8px #00ff66; }
+    .t-cyber { background: #c084fc; box-shadow: 0 0 8px #c084fc; }
+    .t-defcon { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+    .t-ice { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+
+    /* ÖZEL SİBER LAZER HEDEF İMLECİ */
+    .cyber-crosshair {
+      position: fixed;
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--c-green);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 100000;
+      transform: translate(-50%, -50%);
+      transition: transform 0.05s ease-out, border-color 0.3s;
+      display: none;
+    }
+    .cyber-crosshair::before, .cyber-crosshair::after {
+      content: '';
+      position: absolute;
+      background: var(--c-green);
+    }
+    .cyber-crosshair::before { top: 50%; left: -6px; right: -6px; height: 1px; transform: translateY(-50%); }
+    .cyber-crosshair::after { left: 50%; top: -6px; bottom: -6px; width: 1px; transform: translateX(-50%); }
+
+    .cyber-dot {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: var(--c-green);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 100001;
+      transform: translate(-50%, -50%);
+      display: none;
+      box-shadow: 0 0 6px var(--c-green);
+    }
+
+    .laser-ripple {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--c-green);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%) scale(1);
+      animation: rippleExpand 0.45s ease-out forwards;
+    }
+    @keyframes rippleExpand {
+      to { transform: translate(-50%, -50%) scale(5.5); opacity: 0; }
+    }
+
+    /* GLITCH EFEKTİ */
+    .glitch-text {
+      position: relative;
+      display: inline-block;
+      cursor: default;
+    }
+    .glitch-text:hover {
+      animation: glitchAnim 0.3s infinite;
+    }
+    @keyframes glitchAnim {
+      0% { transform: translate(0); text-shadow: -2px 0 #00e5ff, 2px 0 #ff0055; }
+      20% { transform: translate(-2px, 1px); text-shadow: 2px 0 #00e5ff, -2px 0 #ff0055; }
+      40% { transform: translate(1px, -1px); text-shadow: -1px 0 #00ff66, 1px 0 #c084fc; }
+      60% { transform: translate(-1px, 2px); text-shadow: 2px 0 #00e5ff, -1px 0 #ff0055; }
+      80% { transform: translate(2px, -1px); text-shadow: -2px 0 #00e5ff, 2px 0 #00ff66; }
+      100% { transform: translate(0); text-shadow: -2px 0 #00e5ff, 2px 0 #ff0055; }
+    }
+
+    /* 13. 🏆 CTF OYUNU & SERTİFİKA STİLLERİ */
+    .ctf-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .ctf-mission-card {
+      background: rgba(6, 16, 10, 0.85);
+      border: 1px solid #ca8a04;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 22px;
+    }
+    .ctf-stage-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--c-gold);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ctf-hint-box {
+      background: #020704;
+      border-left: 3px solid #ca8a04;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: #fef08a;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .ctf-flag-input-group {
+      display: flex;
+      gap: 10px;
+    }
+    @media (max-width: 600px) {
+      .ctf-flag-input-group { flex-direction: column; }
+    }
+    .ctf-input {
+      flex: 1;
+      background: #010402;
+      border: 1px solid #ca8a04;
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .ctf-submit-btn {
+      background: rgba(250, 204, 21, 0.15);
+      border: 1px solid #facc15;
+      color: #facc15;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ctf-submit-btn:hover {
+      background: #facc15;
+      color: #030805;
+      box-shadow: 0 0 20px #facc15;
+    }
+    .certificate-render-wrap {
+      display: none;
+      margin-top: 25px;
+      padding: 24px;
+      background: rgba(10, 20, 12, 0.9);
+      border: 2px solid var(--c-gold);
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 35px rgba(250, 204, 21, 0.3);
+    }
+    #certCanvas {
+      width: 100%;
+      max-width: 780px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+      margin: 18px auto;
+      display: block;
+    }
+    .cert-download-btn {
+      background: var(--c-gold);
+      color: #030805;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 25px rgba(250, 204, 21, 0.5);
+    }
+    .cert-download-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 35px rgba(250, 204, 21, 0.8);
+    }
+
     /* Ortak Geri Dön Butonu */
     .close-panel-btn {
       display: inline-block;
@@ -2306,11 +2566,40 @@
   <canvas id="matrixCanvas"></canvas>
   <div class="grid-overlay"></div>
 
+  <!-- FÜTÜRİSTİK HUD KÖŞELİKLERİ & HEDEF İMLECİ -->
+  <div class="hud-bracket hud-top-left"></div>
+  <div class="hud-bracket hud-top-right"></div>
+  <div class="hud-bracket hud-bottom-left"></div>
+  <div class="hud-bracket hud-bottom-right"></div>
+  <div class="cyber-crosshair" id="cyberCrosshair"></div>
+  <div class="cyber-dot" id="cyberDot"></div>
+
+  <!-- CANLI SİSTEM TELEMETRİSİ VE TEMA SEÇİCİ -->
+  <div class="hud-telemetry-bar">
+    <div class="hud-telemetry-items">
+      <span class="hud-telemetry-item">NODE: <strong>DEFENDER-01</strong></span>
+      <span class="hud-telemetry-item">CPU: <strong id="telemetryCpu">14%</strong></span>
+      <span class="hud-telemetry-item">RAM: <strong id="telemetryRam">3.4 GB</strong></span>
+      <span class="hud-telemetry-item">KALKAN: <strong style="color:var(--c-green);" id="telemetryShield">99.8%</strong></span>
+      <span class="hud-telemetry-item">DEFCON: <strong style="color:#22c55e;">5 (GÜVENLİ)</strong></span>
+    </div>
+
+    <div class="theme-selector-wrap">
+      <span>🎨 TEMA:</span>
+      <div class="theme-dots-group">
+        <span class="theme-btn-dot t-matrix active" id="themeDot_matrix" title="Matrix Zümrüt Yeşili" onclick="setCyberTheme('matrix')"></span>
+        <span class="theme-btn-dot t-cyber" id="themeDot_cyber" title="Night City Mor & Pembe" onclick="setCyberTheme('cyber')"></span>
+        <span class="theme-btn-dot t-defcon" id="themeDot_defcon" title="DEFCON 1 Kırmızı Alarm" onclick="setCyberTheme('defcon')"></span>
+        <span class="theme-btn-dot t-ice" id="themeDot_ice" title="Zero Day Buz Mavisi" onclick="setCyberTheme('ice')"></span>
+      </div>
+    </div>
+  </div>
+
   <!-- Üst Menü -->
   <header>
     <div class="system-status">
       <div class="pulse-dot"></div>
-      <span>Sistem Durumu: Aktif // 8 Modül Canlı</span>
+      <span>Sistem Durumu: Aktif // 9 Modül Canlı</span>
     </div>
 
     <!-- HACKER SYNTHWAVE / LO-FI MÜZİK ÇALAR -->
@@ -2347,7 +2636,7 @@
   <div class="main-wrap">
 
     <div class="section-headline">
-      <h1>SİBER GÜVENLİK KOMUTA MERKEZİ</h1>
+      <h1><span class="glitch-text">SİBER GÜVENLİK KOMUTA MERKEZİ</span></h1>
       <p>> Başlatmak istediğiniz terminal bilgisayarına dokunun <</p>
     </div>
 
@@ -2690,6 +2979,27 @@
         </div>
 
         <div class="computer-action-btn">👤 PROFİLİ AÇ ➔</div>
+      </div>
+
+      <!-- 9. BİLGİSAYAR [ALTIN SARISI]: CTF Hack Görevi & Siber Sertifika -->
+      <div class="computer-card pc-gold" id="btnPc9" title="İnteraktif CTF Görevi & İsimli Başarı Sertifikası">
+        <span class="computer-badge">MODÜL 09 // CTF & SERTİFİKA</span>
+        
+        <div class="laptop">
+          <div class="laptop-screen">
+            <div class="screen-matrix-bg">
+              FLAG{CTF}10101010011010101HACKED101010101001101010101010101001010101010011010101010101010010101010100110101010101
+            </div>
+            <div class="screen-content">
+              <div class="screen-icon">🏆</div>
+              <div class="screen-title">CTF & SERTİFİKA</div>
+              <div class="screen-desc">Hack Görevi & İsimli Belge</div>
+            </div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <div class="computer-action-btn">🏆 GÖREVİ BAŞLAT ➔</div>
       </div>
 
     </div>
@@ -3167,6 +3477,110 @@ Kullanabileceğiniz komutları görmek için 'help' yazın.
       </div>
     </section>
 
+    <!-- ======================================================== -->
+    <!-- PANEL 9: CTF HACK GÖREVİ & İSİMLİ BAŞARI SERTİFİKASI     -->
+    <!-- ======================================================== -->
+    <section class="content-panel" id="panelCtf">
+      <div class="panel-header" style="border-color: var(--c-gold);">
+        <div class="panel-dots"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+        <span class="panel-title" style="color: var(--c-gold);">TERMINAL 09 // İNTERAKTİF CTF HACK MEYDAN OKUMASI & DİJİTAL SERTİFİKA</span>
+        <span style="font-size:0.75rem; color:#ca8a04;">[3 AŞAMALI GÖREV]</span>
+      </div>
+
+      <div class="panel-body">
+        <div class="ctf-container">
+          <div style="text-align:center; margin-bottom: 26px;">
+            <h2 style="color:var(--c-gold); font-size:1.6rem; margin-bottom:8px;">🏆 EMRE KARAMAN SİBER CTF GÖREVİ</h2>
+            <p style="color:#fef08a; font-size:0.92rem; line-height:1.7;">
+              Aşağıdaki 3 kademeli siber güvenlik görevini tamamlayarak sistem bayraklarını yakalayın. Üç aşamayı da başarıyla geçen her siber savunucuya, Emre Karaman onaylı <strong>Resmi Siber Savunma Uzmanlık Sertifikası</strong> takdim edilir!
+            </p>
+          </div>
+
+          <!-- GİZLİ YORUM SATIRI (AŞAMA 1 İÇİN) -->
+          <!-- CTF_STAGE_1_SECRET: DEFENDER_STAGE1_FOUND -->
+
+          <!-- AŞAMA 1: Kaynak Kod Analizi -->
+          <div class="ctf-mission-card" id="ctfStage1Box">
+            <div class="ctf-stage-title">
+              <span>🔍 AŞAMA 1:</span> Kaynak Kod Gizli İpucu Analizi
+              <span id="badgeStage1" style="margin-left:auto; font-size:0.75rem; padding:4px 10px; border-radius:4px; background:#14532d; color:#86efac; border:1px solid #22c55e;">AÇIK</span>
+            </div>
+            <div class="ctf-hint-box">
+              💡 <strong>Senaryo & İpucu:</strong> Birçok web uygulamasında geliştiriciler unutarak kaynak koda hassas token veya API anahtarları bırakırlar. Bu sayfanın HTML yapısında gizlenmiş bir yorum satırı (comment) yer alıyor:
+              <br><code style="color:#00ff66; font-size:0.88rem;">&lt;!-- CTF_STAGE_1_SECRET: DEFENDER_STAGE1_FOUND --&gt;</code>
+              <br>Bu gizli anahtarı kopyalayıp aşağıdaki doğrulama alanına yapıştırın.
+            </div>
+            <div class="ctf-flag-input-group">
+              <input type="text" id="ctfInput1" class="ctf-input" placeholder="Aşama 1 Anahtarını girin (Örn: DEFENDER_STAGE1_FOUND)">
+              <button class="ctf-submit-btn" onclick="checkCtfStage(1)">ONAYLA ➔</button>
+            </div>
+            <div id="ctfFeedback1" style="margin-top:10px; font-size:0.88rem;"></div>
+          </div>
+
+          <!-- AŞAMA 2: Kripto Base64 Çözümleme -->
+          <div class="ctf-mission-card" id="ctfStage2Box" style="opacity: 0.55; pointer-events: none; transition: all 0.3s;">
+            <div class="ctf-stage-title">
+              <span>🔐 AŞAMA 2:</span> Şifreli Kimlik Doğrulama Paketi
+              <span id="badgeStage2" style="margin-left:auto; font-size:0.75rem; padding:4px 10px; border-radius:4px; background:#1e293b; color:#94a3b8; border:1px solid #475569;">🔒 AŞAMA 1 TAMAMLANMALI</span>
+            </div>
+            <div class="ctf-hint-box">
+              💡 <strong>Senaryo & İpucu:</strong> Ağ sniff analizi sırasında yakalanan Base64 şifreli kimlik belirteci:
+              <br><code style="font-size:1.05rem; color:var(--c-cyan); font-weight:700;">RUxJVEVfREVGRU5ERVI=</code>
+              <br><em>(Sayfanın üst menüsündeki "SİTE ARACI: KRİPTO ÇEVİRİCİ"yi veya tarayıcınızın konsolunu kullanarak bu Base64 dizesini metne çevirin!)</em>
+            </div>
+            <div class="ctf-flag-input-group">
+              <input type="text" id="ctfInput2" class="ctf-input" placeholder="Çözümlenen açık metni girin...">
+              <button class="ctf-submit-btn" onclick="checkCtfStage(2)">ONAYLA ➔</button>
+            </div>
+            <div id="ctfFeedback2" style="margin-top:10px; font-size:0.88rem;"></div>
+          </div>
+
+          <!-- AŞAMA 3: SQL Enjeksiyonu / Mantıksal Bypass -->
+          <div class="ctf-mission-card" id="ctfStage3Box" style="opacity: 0.55; pointer-events: none; transition: all 0.3s;">
+            <div class="ctf-stage-title">
+              <span>⚡ AŞAMA 3:</span> Veritabanı Mantık Bypass (SQL Injection)
+              <span id="badgeStage3" style="margin-left:auto; font-size:0.75rem; padding:4px 10px; border-radius:4px; background:#1e293b; color:#94a3b8; border:1px solid #475569;">🔒 AŞAMA 2 TAMAMLANMALI</span>
+            </div>
+            <div class="ctf-hint-box">
+              💡 <strong>Senaryo & İpucu:</strong> Bir giriş formunun arka plandaki sorgusu:
+              <br><code>SELECT * FROM users WHERE user = 'admin' AND pass = '$PAROLA'</code>
+              <br>Giriş kontrolünü bypass ederek sorgunun her halükarda DOĞRU (TRUE) sonuç dönmesini sağlayan klasik SQL Injection yükünü (payload) girin:
+              <br><code style="color:var(--c-gold);">' OR 1=1 --</code> veya <code style="color:var(--c-gold);">admin' --</code>
+            </div>
+            <div class="ctf-flag-input-group">
+              <input type="text" id="ctfInput3" class="ctf-input" placeholder="SQL Injection payload'ını girin (Örn: ' OR 1=1 --)">
+              <button class="ctf-submit-btn" onclick="checkCtfStage(3)">BYPASS ET ➔</button>
+            </div>
+            <div id="ctfFeedback3" style="margin-top:10px; font-size:0.88rem;"></div>
+          </div>
+
+          <!-- TEBRİKLER & SERTİFİKA ÜRETİCİSİ -->
+          <div class="certificate-render-wrap" id="certificateWrap">
+            <h3 style="color:var(--c-gold); font-size:1.55rem; margin-bottom:8px;">🎉 TEBRİKLER! TÜM GÖREVLER TAMAMLANDI!</h3>
+            <p style="color:#fef08a; font-size:0.95rem; margin-bottom:18px;">
+              Siber Savunma testini başarıyla geçtiniz. Adınızı yazarak Emre Karaman onaylı resmi sertifikanızı oluşturun ve indirin:
+            </p>
+
+            <div style="display:flex; gap:10px; justify-content:center; max-width:550px; margin:0 auto 18px; flex-wrap:wrap;">
+              <input type="text" id="certRecipientName" class="ctf-input" placeholder="Adınız ve Soyadınız" value="Seçkin Siber Savunucu" oninput="renderCertificatePreview()">
+              <button class="ctf-submit-btn" onclick="renderCertificatePreview()">GÜNCELLE 🔄</button>
+            </div>
+
+            <!-- Canvas Sertifika -->
+            <canvas id="certCanvas" width="1200" height="750"></canvas>
+
+            <div style="margin-top:20px;">
+              <button class="cert-download-btn" onclick="downloadCertificatePng()">
+                <span>📜</span> SERTİFİKAYI İNDİR (PNG)
+              </button>
+            </div>
+          </div>
+
+          <div style="text-align: center;"><button class="close-panel-btn" onclick="closeAllPanels()">⬆️ BİLGİSAYARLARA GERİ DÖN</button></div>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <footer>
@@ -3187,10 +3601,12 @@ Kullanabileceğiniz komutları görmek için 'help' yazın.
     let columns = Math.floor(canvas.width / 14);
     let drops = Array(columns).fill(1);
 
+    let matrixRainColor = '#00ff66';
+
     function drawMatrix() {
       ctx.fillStyle = 'rgba(5, 8, 7, 0.08)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#00ff66';
+      ctx.fillStyle = matrixRainColor;
       ctx.font = '14px monospace';
       for (let i = 0; i < drops.length; i++) {
         const text = chars[Math.floor(Math.random() * chars.length)];
@@ -3232,17 +3648,19 @@ Kullanabileceğiniz komutları görmek için 'help' yazın.
       btnPc5: { panel: document.getElementById('panelQuiz'), pitch: 920 },
       btnPc6: { panel: document.getElementById('panelCheatSheet'), pitch: 680 },
       btnPc7: { panel: document.getElementById('panelThreatMap'), pitch: 580 },
-      btnPc8: { panel: document.getElementById('panelProfile'), pitch: 760 }
+      btnPc8: { panel: document.getElementById('panelProfile'), pitch: 760 },
+      btnPc9: { panel: document.getElementById('panelCtf'), pitch: 880 }
     };
 
     function openPanel(id) {
-      Object.values(panels).forEach(p => p.panel.style.display = 'none');
+      Object.values(panels).forEach(p => { if (p && p.panel) p.panel.style.display = 'none'; });
       const target = panels[id];
-      if (target) {
+      if (target && target.panel) {
         playBeep(target.pitch);
         target.panel.style.display = 'block';
         setTimeout(() => { target.panel.scrollIntoView({ behavior: 'smooth' }); }, 80);
         if (id === 'btnPc7') initThreatMap();
+        if (id === 'btnPc9') initCtfPanel();
       }
     }
 
@@ -4261,6 +4679,344 @@ Kullanabileceğiniz komutları görmek için 'help' yazın.
       msg.innerHTML = content;
       chatMessages.appendChild(msg);
       chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // ==========================================
+    // 12. FÜTÜRİSTİK HUD SİBER TEMA DEĞİŞTİRİCİ
+    // ==========================================
+    let currentCyberTheme = 'matrix';
+    function setCyberTheme(theme) {
+      currentCyberTheme = theme;
+      playBeep(680);
+
+      const dots = {
+        matrix: document.getElementById('themeDot_matrix'),
+        cyber: document.getElementById('themeDot_cyber'),
+        defcon: document.getElementById('themeDot_defcon'),
+        ice: document.getElementById('themeDot_ice')
+      };
+      Object.values(dots).forEach(d => { if (d) d.classList.remove('active'); });
+      if (dots[theme]) dots[theme].classList.add('active');
+
+      const root = document.documentElement;
+      if (theme === 'matrix') {
+        matrixRainColor = '#00ff66';
+        root.style.setProperty('--c-green', '#00ff66');
+        root.style.setProperty('--c-cyan', '#00e5ff');
+      } else if (theme === 'cyber') {
+        matrixRainColor = '#c084fc';
+        root.style.setProperty('--c-green', '#c084fc');
+        root.style.setProperty('--c-cyan', '#f43f5e');
+      } else if (theme === 'defcon') {
+        matrixRainColor = '#ef4444';
+        root.style.setProperty('--c-green', '#ef4444');
+        root.style.setProperty('--c-cyan', '#f97316');
+      } else if (theme === 'ice') {
+        matrixRainColor = '#38bdf8';
+        root.style.setProperty('--c-green', '#38bdf8');
+        root.style.setProperty('--c-cyan', '#818cf8');
+      }
+    }
+
+    // ==========================================
+    // 13. CANLI SİSTEM TELEMETRİSİ (HUD AKIŞI)
+    // ==========================================
+    setInterval(() => {
+      const cpu = document.getElementById('telemetryCpu');
+      const ram = document.getElementById('telemetryRam');
+      const shield = document.getElementById('telemetryShield');
+      if (cpu) cpu.innerText = (12 + Math.floor(Math.random() * 9)) + '%';
+      if (ram) ram.innerText = (3.2 + Math.random() * 0.4).toFixed(1) + ' GB';
+      if (shield) shield.innerText = (99.4 + Math.random() * 0.5).toFixed(1) + '%';
+    }, 2400);
+
+    // ==========================================
+    // 14. SİBER HEDEF İMLECİ & LAZER HALKASI
+    // ==========================================
+    const cyberCrosshair = document.getElementById('cyberCrosshair');
+    const cyberDot = document.getElementById('cyberDot');
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+    if (hasFinePointer && cyberCrosshair && cyberDot) {
+      window.addEventListener('mousemove', (e) => {
+        cyberCrosshair.style.display = 'block';
+        cyberDot.style.display = 'block';
+        cyberCrosshair.style.left = e.clientX + 'px';
+        cyberCrosshair.style.top = e.clientY + 'px';
+        cyberDot.style.left = e.clientX + 'px';
+        cyberDot.style.top = e.clientY + 'px';
+      });
+
+      window.addEventListener('click', (e) => {
+        const rip = document.createElement('div');
+        rip.className = 'laser-ripple';
+        rip.style.left = e.clientX + 'px';
+        rip.style.top = e.clientY + 'px';
+        document.body.appendChild(rip);
+        setTimeout(() => { rip.remove(); }, 450);
+      });
+    }
+
+    // ==========================================
+    // 15. 🏆 CTF GÖREVİ & SERTİFİKA OLUŞTURUCU
+    // ==========================================
+    let ctfStage1Passed = false;
+    let ctfStage2Passed = false;
+    let ctfStage3Passed = false;
+
+    function initCtfPanel() {
+      if (ctfStage3Passed) {
+        renderCertificatePreview();
+      }
+    }
+
+    function checkCtfStage(stage) {
+      if (stage === 1) {
+        const val = (document.getElementById('ctfInput1').value || '').trim();
+        const fb = document.getElementById('ctfFeedback1');
+        if (val === 'DEFENDER_STAGE1_FOUND') {
+          ctfStage1Passed = true;
+          playBeep(880);
+          fb.style.color = '#4ade80';
+          fb.innerHTML = '✅ <strong>HARİKA!</strong> Gizli yorum satırı anahtarı doğrulandı. 2. Aşama kilidi açıldı!';
+          document.getElementById('badgeStage1').innerHTML = '✅ TAMAMLANDI';
+          document.getElementById('badgeStage1').style.background = '#14532d';
+          document.getElementById('badgeStage1').style.color = '#86efac';
+          
+          const s2 = document.getElementById('ctfStage2Box');
+          s2.style.opacity = '1';
+          s2.style.pointerEvents = 'auto';
+          document.getElementById('badgeStage2').innerHTML = 'AÇIK';
+          document.getElementById('badgeStage2').style.background = '#14532d';
+          document.getElementById('badgeStage2').style.color = '#86efac';
+        } else {
+          playBeep(260);
+          fb.style.color = '#f87171';
+          fb.innerHTML = '❌ <strong>Geçersiz Anahtar!</strong> Sayfa kaynağındaki gizli token: <code>DEFENDER_STAGE1_FOUND</code> olmalıdır.';
+        }
+      } else if (stage === 2) {
+        const val = (document.getElementById('ctfInput2').value || '').trim().toUpperCase();
+        const fb = document.getElementById('ctfFeedback2');
+        if (val === 'ELITE_DEFENDER') {
+          ctfStage2Passed = true;
+          playBeep(880);
+          fb.style.color = '#4ade80';
+          fb.innerHTML = '✅ <strong>KUSURSUZ!</strong> Base64 çözümlendi: <code>ELITE_DEFENDER</code>. 3. Aşama SQL Injection kilidi açıldı!';
+          document.getElementById('badgeStage2').innerHTML = '✅ TAMAMLANDI';
+          document.getElementById('badgeStage2').style.background = '#14532d';
+          document.getElementById('badgeStage2').style.color = '#86efac';
+
+          const s3 = document.getElementById('ctfStage3Box');
+          s3.style.opacity = '1';
+          s3.style.pointerEvents = 'auto';
+          document.getElementById('badgeStage3').innerHTML = 'AÇIK';
+          document.getElementById('badgeStage3').style.background = '#14532d';
+          document.getElementById('badgeStage3').style.color = '#86efac';
+        } else {
+          playBeep(260);
+          fb.style.color = '#f87171';
+          fb.innerHTML = '❌ <strong>Hatalı Çözüm!</strong> <code>RUxJVEVfREVGRU5ERVI=</code> Base64 dizesini çözdüğünüzde sonuç "ELITE_DEFENDER" olmalıdır.';
+        }
+      } else if (stage === 3) {
+        const val = (document.getElementById('ctfInput3').value || '').trim();
+        const fb = document.getElementById('ctfFeedback3');
+        const isSqli = (val.includes("1=1") || val.includes("1'='1") || val.includes("admin'") || val.includes("' OR '") || val.includes("' or '") || val.includes("' OR 1=1") || val.includes("' or 1=1"));
+        if (isSqli) {
+          ctfStage3Passed = true;
+          playBeep(1040);
+          fb.style.color = '#4ade80';
+          fb.innerHTML = '🏆 <strong>GİRİŞ BYPASS EDİLDİ!</strong> Yetkisiz SQL admin erişimi simüle edildi ve bayrak yakalandı!';
+          document.getElementById('badgeStage3').innerHTML = '✅ TAMAMLANDI';
+          document.getElementById('badgeStage3').style.background = '#14532d';
+          document.getElementById('badgeStage3').style.color = '#86efac';
+
+          const certWrap = document.getElementById('certificateWrap');
+          certWrap.style.display = 'block';
+          renderCertificatePreview();
+          setTimeout(() => { certWrap.scrollIntoView({ behavior: 'smooth' }); }, 120);
+        } else {
+          playBeep(260);
+          fb.style.color = '#f87171';
+          fb.innerHTML = '❌ <strong>Sorgu Başarısız!</strong> SQL giriş kontrolünü bypass etmek için örnek: <code>\' OR 1=1 --</code> payload\'ını deneyin.';
+        }
+      }
+    }
+
+    function renderCertificatePreview() {
+      const c = document.getElementById('certCanvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const w = c.width;
+      const h = c.height;
+
+      const recipient = (document.getElementById('certRecipientName').value || 'Seçkin Siber Savunucu').trim();
+
+      // 1. Zengin Koyu Arka Plan
+      const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+      bgGrad.addColorStop(0, '#040d07');
+      bgGrad.addColorStop(0.5, '#020704');
+      bgGrad.addColorStop(1, '#06130b');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // İnce Arka Plan Siber Çapraz Izgara Deseni
+      ctx.strokeStyle = 'rgba(0, 255, 102, 0.035)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 36) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 36) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // 2. Altın Çift Neon Çerçeve
+      ctx.strokeStyle = '#ca8a04';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(30, 30, w - 60, h - 60);
+
+      ctx.strokeStyle = 'rgba(250, 204, 21, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(42, 42, w - 84, h - 84);
+
+      // 4 Köşe Fütüristik L-Köşelikleri
+      const bracketLen = 32;
+      ctx.strokeStyle = '#00ff66';
+      ctx.lineWidth = 3;
+      // Sol Üst
+      ctx.beginPath(); ctx.moveTo(22, 22 + bracketLen); ctx.lineTo(22, 22); ctx.lineTo(22 + bracketLen, 22); ctx.stroke();
+      // Sağ Üst
+      ctx.beginPath(); ctx.moveTo(w - 22 - bracketLen, 22); ctx.lineTo(w - 22, 22); ctx.lineTo(w - 22, 22 + bracketLen); ctx.stroke();
+      // Sol Alt
+      ctx.beginPath(); ctx.moveTo(22, h - 22 - bracketLen); ctx.lineTo(22, h - 22); ctx.lineTo(22 + bracketLen, h - 22); ctx.stroke();
+      // Sağ Alt
+      ctx.beginPath(); ctx.moveTo(w - 22 - bracketLen, h - 22); ctx.lineTo(w - 22, h - 22); ctx.lineTo(w - 22, h - 22 - bracketLen); ctx.stroke();
+
+      // 3. Üst Başlık
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#00ff66';
+      ctx.font = '600 17px "Fira Code", monospace';
+      ctx.fillText('[ SİBER GÜVENLİK KOMUTA MERKEZİ // DEFENSE PROTOCOL ]', w / 2, 90);
+
+      ctx.fillStyle = '#facc15';
+      ctx.font = 'bold 36px "Fira Code", monospace';
+      ctx.shadowColor = 'rgba(250, 204, 21, 0.6)';
+      ctx.shadowBlur = 15;
+      ctx.fillText('ÜSTÜN BAŞARI & UZMANLIK SERTİFİKASI', w / 2, 145);
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '16px "Fira Code", monospace';
+      ctx.fillText('Bu resmi belge, aşağıda kimliği belirtilen siber güvenlik uzmanının;', w / 2, 195);
+
+      // 4. Hak Sahibi İsim Alanı
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 44px "Fira Code", monospace';
+      ctx.shadowColor = 'rgba(0, 255, 102, 0.8)';
+      ctx.shadowBlur = 20;
+      ctx.fillText(recipient, w / 2, 265);
+      ctx.shadowBlur = 0;
+
+      // İsmin Altındaki Altın Çizgi
+      const nameWidth = ctx.measureText(recipient).width;
+      const lineStart = (w / 2) - (nameWidth / 2) - 25;
+      const lineEnd = (w / 2) + (nameWidth / 2) + 25;
+      const goldGrad = ctx.createLinearGradient(lineStart, 0, lineEnd, 0);
+      goldGrad.addColorStop(0, 'rgba(250, 204, 21, 0)');
+      goldGrad.addColorStop(0.5, '#facc15');
+      goldGrad.addColorStop(1, 'rgba(250, 204, 21, 0)');
+      ctx.strokeStyle = goldGrad;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(lineStart, 285);
+      ctx.lineTo(lineEnd, 285);
+      ctx.stroke();
+
+      // 5. Başarı Metni
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '18px "Fira Code", monospace';
+      ctx.fillText('Ağ Trafik Analizi, Kriptoloji & Base64 Çözümleme, SQL Enjeksiyonu', w / 2, 340);
+      ctx.fillText('ve Siber Savunma (Blue Team) CTF meydan okumalarını başarıyla tamamlayarak', w / 2, 372);
+
+      ctx.fillStyle = '#00ff66';
+      ctx.font = 'bold 21px "Fira Code", monospace';
+      ctx.fillText('"ELİT SİBER SAVUNUCU" (ELITE CYBER DEFENDER)', w / 2, 415);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '16px "Fira Code", monospace';
+      ctx.fillText('unvanını almaya ve bu dijital yeterlilik belgesini taşımaya hak kazandığını onaylar.', w / 2, 452);
+
+      // 6. Hologram / Mühür Rozeti (Ortanın biraz altında)
+      const sealX = w / 2;
+      const sealY = 535;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, 44, 0, Math.PI * 2);
+      ctx.strokeStyle = '#ca8a04';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, 38, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(0, 255, 102, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.fillStyle = '#facc15';
+      ctx.font = '22px sans-serif';
+      ctx.fillText('🛡️', sealX, sealY + 7);
+
+      ctx.fillStyle = '#facc15';
+      ctx.font = 'bold 9px "Fira Code", monospace';
+      ctx.fillText('★ VERIFIED DEFENDER ★', sealX, sealY + 28);
+      ctx.restore();
+
+      // 7. Sol Alt Meta Bilgileri
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#64748b';
+      ctx.font = '13px "Fira Code", monospace';
+      const today = new Date().toLocaleDateString('tr-TR');
+      ctx.fillText('BELGE NO  : EK-CTF-' + Math.floor(100000 + Math.random() * 900000), 80, 640);
+      ctx.fillText('VERİLİŞ   : ' + today, 80, 665);
+      ctx.fillText('DURUM     : DOĞRULANDI (DEFCON 5)', 80, 690);
+
+      // 8. Sağ Alt: Emre Karaman İmza Alanı
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 18px "Fira Code", monospace';
+      ctx.fillText('EMRE KARAMAN', w - 80, 640);
+
+      // Dijital İmza Çizgisi
+      ctx.strokeStyle = '#00ff66';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(w - 280, 648);
+      ctx.lineTo(w - 80, 648);
+      ctx.stroke();
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '13px "Fira Code", monospace';
+      ctx.fillText('Siber Güvenlik Başsavunucusu & Sistem Mimarı', w - 80, 672);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px "Fira Code", monospace';
+      ctx.fillText('emrekaraman-siber1.vercel.app', w - 80, 692);
+    }
+
+    function downloadCertificatePng() {
+      const c = document.getElementById('certCanvas');
+      if (!c) return;
+      playBeep(980);
+      const recipient = (document.getElementById('certRecipientName').value || 'Siber_Savunucu').trim().replace(/\s+/g, '_');
+      const link = document.createElement('a');
+      link.download = `Emre_Karaman_Siber_Guvenlik_Sertifikasi_${recipient}.png`;
+      link.href = c.toDataURL('image/png');
+      link.click();
     }
   </script>
 
